@@ -637,9 +637,15 @@ def inject_styles() -> None:
     <style>
     :root { --paper:#F7F5EF; --ink:#17242D; --muted:#66737B; --focus:#0F766E;
             --switch:#E4573D; --accent:#F2C14E; }
-    .stApp { background:var(--paper); color:var(--ink); }
-    [data-testid="stHeader"] { background:rgba(247,245,239,.88); }
-    [data-testid="stSidebar"] { background:#ECE9E0; }
+#>>>>>>>>>>>>>>>>
+    .stApp { background:var(--background-color); color:var(--text-color); }
+    [data-testid="stHeader"] {
+        background:color-mix(in srgb, var(--background-color) 88%, transparent);
+    }
+    [data-testid="stSidebar"] {
+        background:var(--secondary-background-color);
+    }
+#<<<<<<<<<<<<<<<<
     .block-container { max-width:1380px; padding-top:2.4rem; padding-bottom:3rem; }
     .section-rule { border-top:1px solid #D8D5CC; margin:.6rem 0 1.7rem; }
     .eyebrow { color:var(--switch); font-size:.78rem; font-weight:800; letter-spacing:.14em; }
