@@ -34,16 +34,34 @@ APP_TITLE = "The Cost of Multitasking"
 APP_SUBTITLE = "Why doing more at once often means finishing less"
 DATA_STATUS = "ILLUSTRATIVE PLACEHOLDER DATA - NOT RESEARCH FINDINGS"
 
-PALETTE = {
-    "ink": "#17242D",
-    "muted": "#66737B",
-    "paper": "#F7F5EF",
-    "white": "#FFFFFF",
-    "focus": "#0F766E",
-    "switch": "#E4573D",
-    "accent": "#F2C14E",
-    "grid": "#D8D5CC",
-}
+#>>>>>>>>>>>>>>>>
+ACTIVE_THEME = st.context.theme.type
+
+if ACTIVE_THEME == "dark":
+    PALETTE = {
+        "ink": "#F3F1EA",
+        "muted": "#A9B4BA",
+        "paper": "#0D1418",
+        "white": "#FFFFFF",
+        "focus": "#46BFB1",
+        "switch": "#FF735C",
+        "accent": "#F2C14E",
+        "grid": "#344149",
+        "sidebar": "#182126",
+    }
+else:
+    PALETTE = {
+        "ink": "#17242D",
+        "muted": "#66737B",
+        "paper": "#F7F5EF",
+        "white": "#FFFFFF",
+        "focus": "#0F766E",
+        "switch": "#E4573D",
+        "accent": "#F2C14E",
+        "grid": "#D8D5CC",
+        "sidebar": "#ECE9E0",
+    }
+#<<<<<<<<<<<<<<<<
 
 CITATIONS = {
     1: {
