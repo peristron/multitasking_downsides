@@ -635,8 +635,16 @@ def block_animation_gif() -> bytes:
 def inject_styles() -> None:
     st.markdown("""
     <style>
-    :root { --paper:#F7F5EF; --ink:#17242D; --muted:#66737B; --focus:#0F766E;
-            --switch:#E4573D; --accent:#F2C14E; }
+#>>>>>>>>>>>>>>>>
+    :root {
+        --paper:var(--background-color);
+        --ink:var(--text-color);
+        --muted:color-mix(in srgb, var(--text-color) 68%, transparent);
+        --focus:#46BFB1;
+        --switch:var(--primary-color);
+        --accent:#F2C14E;
+    }
+#<<<<<<<<<<<<<<<<
 #>>>>>>>>>>>>>>>>
     .stApp { background:var(--background-color); color:var(--text-color); }
     [data-testid="stHeader"] {
