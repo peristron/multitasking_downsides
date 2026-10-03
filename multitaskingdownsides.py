@@ -598,8 +598,10 @@ def _draw_wall(axis, completed: int, title: str, action: str, elapsed: int) -> N
                                       mutation_scale=18, color=PALETTE["switch"], linewidth=2.5))
 
 
+#>>>>>>>>>>>>>>>>
 @st.cache_data(show_spinner=False)
-def block_animation_gif() -> bytes:
+def block_animation_gif(theme_name: str) -> bytes:
+#<<<<<<<<<<<<<<<<
     total_frames = max(len(FOCUS_SEQUENCE), len(SWITCH_SEQUENCE)) + 2
     figure, axes = plt.subplots(1, 2, figsize=(12, 4.8))
     figure.patch.set_facecolor(PALETTE["paper"])
