@@ -782,7 +782,12 @@ def render_visual(section_id: str) -> None:
     elif section_id == "building":
         st.markdown(f"<div class='data-label'>{DATA_STATUS}</div>", unsafe_allow_html=True)
         with st.spinner("Building the animation for this session..."):
-            st.image(block_animation_gif(), use_container_width=True)
+#>>>>>>>>>>>>>>>>
+            st.image(
+                block_animation_gif(ACTIVE_THEME),
+                use_container_width=True,
+            )
+#<<<<<<<<<<<<<<<<
     elif section_id == "different":
         st.markdown(f"<div class='data-label'>{DATA_STATUS}</div>", unsafe_allow_html=True)
         figure = schedule_timeline()
