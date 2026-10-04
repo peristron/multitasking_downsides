@@ -221,8 +221,8 @@ SECTIONS = [
                 "they interrupt momentum and create more opportunities to lose your place."
             ),
             (
-                "Use the chart below as a visual model, not a measured claim. The values "
-                "are placeholders that show the shape of a compounding cost."
+                "This chart is mostly a  visual model, not necessarily a measured claim. Values "
+                "are more so placeholders to give a sense of the compounding costs."
             ),
         ],
         "callout_type": "warning",
