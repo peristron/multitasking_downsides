@@ -226,7 +226,7 @@ SECTIONS = [
             ),
         ],
         "callout_type": "warning",
-        "callout": "Illustrative data: the pattern matters here, not the exact values.",
+        "callout": "Illustrative data: the pattern matters here, not the exact values (some numbers may be made up~).",
         "citations": [1],
     },
     {
