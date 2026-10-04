@@ -704,7 +704,7 @@ def momentum_paths():
     figure, axes = plt.subplots(2, 1, figsize=(12, 4.8), sharex=True)
     figure.patch.set_alpha(0)
     routes = [
-        ("straight route: momentum stays pointed at the goal", [(0, 0), (10, 0)], PALETTE["focus"]),
+        ("straight route: momentum stays pointed at your goal", [(0, 0), (10, 0)], PALETTE["focus"]),
         (
             "redirected route: each turn means you're changing the momentum vector",
             [(0, 0), (2, 0), (3, 0.72), (4.2, -0.62), (5.7, 0.62), (7.1, -0.5), (10, 0)],
