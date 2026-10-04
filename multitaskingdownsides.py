@@ -246,8 +246,8 @@ SECTIONS = [
                 "original picture in mind. {cite:4}"
             ),
             (
-                "The curve below is deliberately illustrative. It shows the idea of gradual "
-                "recovery; its minute-by-minute timing isn't a measured finding."
+                "This curve is fairly illustrative, showing the idea of gradual "
+                "recovery; YMMV for for personal, minute-by-minute timing~."
             ),
         ],
         "callout_type": "info",
