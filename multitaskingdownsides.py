@@ -209,7 +209,7 @@ SECTIONS = [
         "id": "brain",
         "nav_label": "2. What Your Brain Actually Does",
         "eyebrow": "THE MECHANISM",
-        "title": "A switch is a tiny handoff.",
+        "title": "A switch is a tiny handoff...and momentum eater",
         "lead": (
             "When you move from a report to a message and back again, you have to put one "
             "set of rules down and reload another. Researchers often describe the delay "
