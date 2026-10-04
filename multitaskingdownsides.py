@@ -22,7 +22,7 @@ from matplotlib.patches import FancyArrowPatch, Patch, Rectangle
 st.set_page_config(
     page_title="the cost of multitasking",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="auto",
 )
 
 
@@ -841,6 +841,10 @@ def inject_styles() -> None:
         --data-label-bg:color-mix(in srgb, var(--accent) 18%, var(--background-color));
         --data-label-text:var(--text-color);
     }
+    html, body {
+        -webkit-text-size-adjust:100%;
+        text-size-adjust:100%;
+    }
     body { text-transform:lowercase; }
     .citation-text { text-transform:none; }
     .stApp { background:var(--background-color); color:var(--text-color); }
@@ -848,14 +852,21 @@ def inject_styles() -> None:
         background:color-mix(in srgb, var(--background-color) 88%, transparent);
     }
     [data-testid="stSidebar"] {
-        background:var(--secondary-background-color);
+        background-color:var(--secondary-background-color, var(--background-color))!important;
+        z-index:999999!important;
+        isolation:isolate;
+    }
+    [data-testid="stSidebar"] > div,
+    [data-testid="stSidebarContent"] {
+        background-color:var(--secondary-background-color, var(--background-color))!important;
+        opacity:1!important;
     }
     .block-container { max-width:1380px; padding-top:2.4rem; padding-bottom:3rem; }
     .section-rule { border-top:1px solid var(--line); margin:.6rem 0 1.7rem; }
     .eyebrow { color:var(--switch); font-size:.78rem; font-weight:800; letter-spacing:.14em; }
-    .display-title { color:var(--ink); font-size:clamp(2.7rem,5.4vw,5.4rem); line-height:.98;
+    .display-title { color:var(--ink); font-size:5rem; line-height:.98;
                      font-weight:800; max-width:980px; margin:.55rem 0 1.2rem; }
-    .lead { color:var(--ink); font-size:clamp(1.28rem,2vw,1.8rem); line-height:1.45;
+    .lead { color:var(--ink); font-size:1.65rem; line-height:1.45;
             max-width:980px; margin-bottom:1.6rem; }
     .body-copy { color:var(--ink); font-size:1.12rem; line-height:1.68; max-width:850px; }
     .progress-copy { color:var(--muted); font-size:.85rem; font-weight:700; }
@@ -910,10 +921,42 @@ def inject_styles() -> None:
     sup a { color:var(--switch)!important; font-weight:800; text-decoration:none!important; }
     div[data-testid="stButton"]>button { min-height:3rem; font-weight:750; border-radius:4px; }
     div[data-testid="stButton"]>button[kind="primary"] { background:var(--switch); border-color:var(--switch); }
-    @media(max-width:700px) { .block-container{padding-top:1.5rem}.display-title{font-size:2.75rem}
-                             .lead{font-size:1.22rem}.attention-task{grid-template-columns:2rem 1fr}
-                             .attention-state{grid-column:2}.wall-summary{grid-template-columns:1fr}
-                             .wall-summary-item{border-right:0;border-bottom:1px solid var(--line)} }
+    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { min-width:0; }
+    @media(max-width:1000px) {
+        .display-title{font-size:3.6rem;line-height:1.04}
+        .lead{font-size:1.4rem}
+    }
+    @media(max-width:700px) {
+        .block-container{
+            max-width:100%;
+            padding:1.1rem 1rem 2.25rem!important;
+        }
+        .display-title{
+            font-size:2.35rem;
+            line-height:1.08;
+            margin:.45rem 0 1rem;
+            overflow-wrap:break-word;
+        }
+        .lead{font-size:1.08rem;line-height:1.5;margin-bottom:1.25rem}
+        .body-copy{font-size:1rem;line-height:1.62;max-width:100%}
+        .body-copy p{margin:0 0 1rem}
+        .eyebrow,.progress-copy{font-size:.7rem}
+        .data-label{font-size:.74rem;line-height:1.4;max-width:100%}
+        .attention-task{grid-template-columns:2rem minmax(0,1fr)}
+        .attention-name{font-size:1.02rem}
+        .attention-state{grid-column:2;font-size:.76rem}
+        .attention-caption{font-size:.96rem}
+        .wall-summary{grid-template-columns:1fr}
+        .wall-summary-item{border-right:0;border-bottom:1px solid var(--line)}
+        .footnotes,.footnotes p,.source-item,.source-companion{
+            font-size:.76rem;
+            line-height:1.55;
+            overflow-wrap:anywhere;
+        }
+        .source-item a,.footnotes a{overflow-wrap:anywhere;word-break:break-word}
+        [data-testid="stSidebar"]{max-width:min(88vw,21rem)!important}
+        [data-testid="stSidebar"] *{overflow-wrap:break-word}
+    }
     @media(prefers-reduced-motion:reduce) { .attention-task,.attention-task::after{animation:none} }
     @media print { [data-testid="stSidebar"],[data-testid="stHeader"],[data-testid="stButton"]
                    {display:none!important}.block-container{max-width:none;padding:0} }
