@@ -303,9 +303,9 @@ SECTIONS = [
                 "return less expensive."
             ),
             (
-                "Teams can help by agreeing on what's truly urgent and when quick replies "
+                "A thought: Teams can help by agreeing on what's truly urgent and when quick replies "
                 "are expected. Focus becomes more realistic when the surrounding norms "
-                "support it."
+                "support it. What say you?"
             ),
         ],
         "callout_type": "info",
