@@ -20,7 +20,7 @@ from matplotlib import animation
 from matplotlib.patches import FancyArrowPatch, Patch, Rectangle
 
 st.set_page_config(
-    page_title="The Cost of Multitasking",
+    page_title="the cost of multitasking",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -30,9 +30,9 @@ st.set_page_config(
 # App configuration and editable presentation content
 # -----------------------------------------------------------------------------
 
-APP_TITLE = "The Cost of Multitasking"
-APP_SUBTITLE = "Why doing more at once often means finishing less"
-DATA_STATUS = "ILLUSTRATIVE PLACEHOLDER DATA - NOT RESEARCH FINDINGS"
+APP_TITLE = "the cost of multitasking"
+APP_SUBTITLE = "why doing more at once often means finishing less"
+DATA_STATUS = "illustrative placeholder data - not research findings"
 
 ACTIVE_THEME = st.context.theme.type
 
@@ -273,6 +273,13 @@ SECTIONS = [
             (
                 "It's a metaphor, not a productivity formula. Its purpose is to make "
                 "invisible coordination costs visible. {cite:2}"
+            ),
+            (
+                "A physics metaphor adds another angle. Picture a loaded cart heading for "
+                "a loading bay: a straight route keeps its momentum pointed toward the goal, "
+                "while each detour means slowing, redirecting, and accelerating again. Work "
+                "isn't a mechanical system, but returning to a task can feel like rebuilding "
+                "that direction and momentum."
             ),
         ],
         "callout_type": "warning",
@@ -607,23 +614,23 @@ def switching_cost_chart() -> go.Figure:
     figure = go.Figure()
     figure.add_trace(go.Bar(
         x=SWITCHING_COST["switches"], y=SWITCHING_COST["productive_minutes_lost"],
-        name="Minutes redirected", marker_color=PALETTE["switch"],
+        name="minutes redirected", marker_color=PALETTE["switch"],
         hovertemplate="%{x} switches<br>%{y} illustrative minutes<extra></extra>",
     ))
     figure.add_trace(go.Scatter(
         x=SWITCHING_COST["switches"], y=SWITCHING_COST["error_index"],
-        name="Error index", mode="lines+markers", yaxis="y2",
+        name="error index", mode="lines+markers", yaxis="y2",
         line={"color": PALETTE["focus"], "width": 4}, marker={"size": 9},
-        hovertemplate="%{x} switches<br>Index %{y} (illustrative)<extra></extra>",
+        hovertemplate="%{x} switches<br>index %{y} (illustrative)<extra></extra>",
     ))
     figure.update_layout(
         height=480, margin={"l": 20, "r": 20, "t": 50, "b": 20},
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
         font={"family": "Arial, sans-serif", "color": PALETTE["ink"], "size": 15},
         hovermode="x unified", legend={"orientation": "h", "y": 1.12, "x": 0},
-        xaxis={"title": "Switches during a work block", "showgrid": False},
-        yaxis={"title": "Illustrative minutes redirected", "gridcolor": PALETTE["grid"]},
-        yaxis2={"title": "Illustrative error index", "overlaying": "y", "side": "right",
+        xaxis={"title": "switches during a work block", "showgrid": False},
+        yaxis={"title": "illustrative minutes redirected", "gridcolor": PALETTE["grid"]},
+        yaxis2={"title": "illustrative error index", "overlaying": "y", "side": "right",
                   "showgrid": False, "range": [95, 150]},
     )
     return figure
@@ -636,16 +643,16 @@ def refocus_chart() -> go.Figure:
         line={"color": PALETTE["focus"], "width": 5, "shape": "spline"},
         fillcolor="rgba(15,118,110,0.14)",
         marker={"size": 10, "color": PALETTE["accent"], "line": {"width": 2}},
-        hovertemplate="Minute %{x}<br>%{y}% attention (illustrative)<extra></extra>",
+        hovertemplate="minute %{x}<br>%{y}% attention (illustrative)<extra></extra>",
     ))
     figure.add_hline(y=90, line_dash="dot", line_color=PALETTE["muted"],
-                     annotation_text="Near-full return", annotation_position="bottom right")
+                     annotation_text="near-full return", annotation_position="bottom right")
     figure.update_layout(
         height=460, margin={"l": 20, "r": 20, "t": 35, "b": 20},
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", showlegend=False,
         font={"family": "Arial, sans-serif", "color": PALETTE["ink"], "size": 15},
-        xaxis={"title": "Minutes after interruption", "showgrid": False},
-        yaxis={"title": "Attention available (illustrative %)", "range": [0, 105],
+        xaxis={"title": "minutes after interruption", "showgrid": False},
+        yaxis={"title": "attention available (illustrative %)", "range": [0, 105],
                "gridcolor": PALETTE["grid"]},
     )
     return figure
@@ -672,10 +679,10 @@ def schedule_timeline():
                              edgecolors=PALETTE["paper"], linewidth=2)
             if duration >= 20:
                 text_color = PALETTE["ink"] if kind == "admin" else PALETTE["white"]
-                axis.text(start + duration / 2, y_position + 4.5, label, ha="center", va="center",
+                axis.text(start + duration / 2, y_position + 4.5, label.lower(), ha="center", va="center",
                           color=text_color, fontsize=9, weight="bold")
     axis.set(xlim=(0, 240), ylim=(2, 35))
-    axis.set_yticks([11.5, 26.5], labels=["Blocked day", "Fragmented day"])
+    axis.set_yticks([11.5, 26.5], labels=["blocked day", "fragmented day"])
     ticks = list(range(0, 241, 30))
     axis.set_xticks(ticks, labels=[_time_label(tick) for tick in ticks])
     axis.grid(axis="x", color=PALETTE["grid"], linewidth=0.8)
@@ -684,11 +691,75 @@ def schedule_timeline():
     for spine in axis.spines.values():
         spine.set_visible(False)
     axis.legend(handles=[
-        Patch(facecolor=PALETTE["focus"], label="Focused project work"),
-        Patch(facecolor=PALETTE["switch"], label="Interruptions / meetings"),
-        Patch(facecolor=PALETTE["accent"], label="Batched messages"),
+        Patch(facecolor=PALETTE["focus"], label="focused project work"),
+        Patch(facecolor=PALETTE["switch"], label="interruptions / meetings"),
+        Patch(facecolor=PALETTE["accent"], label="batched messages"),
     ], loc="upper center", bbox_to_anchor=(0.5, -0.24), ncol=3, frameon=False, fontsize=10)
     figure.tight_layout()
+    return figure
+
+
+def momentum_paths():
+    """Draw a compact, conceptual cart-path metaphor using basic vector changes."""
+    figure, axes = plt.subplots(2, 1, figsize=(12, 4.8), sharex=True)
+    figure.patch.set_alpha(0)
+    routes = [
+        ("straight route: momentum stays pointed at the goal", [(0, 0), (10, 0)], PALETTE["focus"]),
+        (
+            "redirected route: each turn changes the momentum vector",
+            [(0, 0), (2, 0), (3, 0.72), (4.2, -0.62), (5.7, 0.62), (7.1, -0.5), (10, 0)],
+            PALETTE["switch"],
+        ),
+    ]
+
+    for axis, (title, points, color) in zip(axes, routes):
+        axis.set_facecolor("none")
+        axis.set(xlim=(-0.4, 10.5), ylim=(-1.05, 1.05))
+        axis.axis("off")
+        axis.set_title(title, loc="left", fontsize=12, fontweight="bold", color=PALETTE["ink"])
+        for start, end in zip(points[:-1], points[1:]):
+            axis.add_patch(FancyArrowPatch(
+                start,
+                end,
+                arrowstyle="-|>",
+                mutation_scale=18,
+                linewidth=3,
+                color=color,
+                shrinkA=0,
+                shrinkB=0,
+            ))
+        axis.scatter([points[0][0]], [points[0][1]], s=110, color=PALETTE["accent"], zorder=4)
+        axis.scatter([points[-1][0]], [points[-1][1]], s=125, marker="s",
+                     color=PALETTE["focus"], zorder=4)
+        axis.text(points[0][0], -0.82, "loaded cart", ha="left", color=PALETTE["muted"], fontsize=9)
+        axis.text(points[-1][0], -0.82, "loading bay", ha="right", color=PALETTE["muted"], fontsize=9)
+
+    turn_points = routes[1][1][1:-1]
+    axes[1].scatter(
+        [point[0] for point in turn_points],
+        [point[1] for point in turn_points],
+        s=34,
+        color=PALETTE["accent"],
+        edgecolor=PALETTE["paper"],
+        linewidth=1,
+        zorder=5,
+    )
+    figure.suptitle(
+        "a physics lens: changing direction takes impulse",
+        x=0.06,
+        ha="left",
+        fontsize=18,
+        fontweight="bold",
+        color=PALETTE["ink"],
+    )
+    figure.text(
+        0.06,
+        0.02,
+        "in physics, impulse changes momentum. here, that is a metaphor for redirecting attention - not a measurement of cognition.",
+        color=PALETTE["muted"],
+        fontsize=9,
+    )
+    figure.subplots_adjust(left=0.06, right=0.98, top=0.78, bottom=0.15, hspace=0.5)
     return figure
 
 
@@ -708,11 +779,11 @@ def _draw_wall(
             facecolor=PALETTE["focus"] if filled else "none",
             edgecolor=PALETTE["focus"] if filled else PALETTE["grid"], linewidth=2,
         ))
-    labels = {"build": "Placing the next brick", "switch": "Switching away",
-              "reorient": "Finding the place again", "done": "Wall complete", "waiting": "Ready"}
+    labels = {"build": "placing the next brick", "switch": "switching away",
+              "reorient": "finding the place again", "done": "wall complete", "waiting": "ready"}
     action_color = PALETTE["switch"] if action in {"switch", "reorient"} else PALETTE["focus"]
-    status_prefix = (f"Complete at step {completion_step:02d}"
-                     if action == "done" else f"Step {elapsed:02d}")
+    status_prefix = (f"complete at step {completion_step:02d}"
+                     if action == "done" else f"step {elapsed:02d}")
     axis.text(0, -0.55, f"{status_prefix}  |  {labels[action]}", fontsize=11,
               color=action_color, fontweight="bold")
     axis.text(5, -0.55, f"{completed}/15 placed", fontsize=11, color=PALETTE["muted"], ha="right")
@@ -728,7 +799,7 @@ def block_animation_gif(theme_name: str) -> bytes:
     figure, axes = plt.subplots(1, 2, figsize=(12, 4.8))
     figure.patch.set_facecolor(PALETTE["paper"])
     figure.subplots_adjust(left=0.04, right=0.98, top=0.82, bottom=0.12, wspace=0.16)
-    heading = figure.suptitle("Two ways to finish the same work", x=0.04, ha="left",
+    heading = figure.suptitle("two ways to finish the same work", x=0.04, ha="left",
                               fontsize=20, fontweight="bold", color=PALETTE["ink"])
 
     def update(frame: int):
@@ -738,9 +809,9 @@ def block_animation_gif(theme_name: str) -> bytes:
                         else ("done" if frame >= len(FOCUS_SEQUENCE) else "waiting"))
         switch_action = (SWITCH_SEQUENCE[frame - 1] if 0 < frame < len(SWITCH_SEQUENCE)
                          else ("done" if frame >= len(SWITCH_SEQUENCE) else "waiting"))
-        _draw_wall(axes[0], focus_count, "A. Protected focus", focus_action, frame, 15)
-        _draw_wall(axes[1], switch_count, "B. Frequent switching", switch_action, frame, 30)
-        heading.set_text(f"Two ways to finish the same work  |  elapsed step {frame:02d}")
+        _draw_wall(axes[0], focus_count, "a. protected focus", focus_action, frame, 15)
+        _draw_wall(axes[1], switch_count, "b. frequent switching", switch_action, frame, 30)
+        heading.set_text(f"two ways to finish the same work  |  elapsed step {frame:02d}")
         return [heading]
 
     movie = animation.FuncAnimation(figure, update, frames=frame_sequence, interval=500,
@@ -770,6 +841,8 @@ def inject_styles() -> None:
         --data-label-bg:color-mix(in srgb, var(--accent) 18%, var(--background-color));
         --data-label-text:var(--text-color);
     }
+    body { text-transform:lowercase; }
+    .citation-text { text-transform:none; }
     .stApp { background:var(--background-color); color:var(--text-color); }
     [data-testid="stHeader"] {
         background:color-mix(in srgb, var(--background-color) 88%, transparent);
@@ -939,7 +1012,7 @@ def render_endnotes(citation_ids: list[int]) -> None:
         lines.append(
             f"<p id='source-{citation_id}'><strong>[{citation_id}]</strong> "
             f"<span class='source-label'>{escape(citation['label'])}</span><br>"
-            f"{escape(citation['reference'])}{link}</p>"
+            f"<span class='citation-text'>{escape(citation['reference'])}</span>{link}</p>"
         )
     st.markdown("".join(lines) + "</div>", unsafe_allow_html=True)
 
@@ -1009,6 +1082,9 @@ def render_visual(section_id: str) -> None:
             """,
             unsafe_allow_html=True,
         )
+        physics_figure = momentum_paths()
+        st.pyplot(physics_figure, use_container_width=True)
+        plt.close(physics_figure)
     elif section_id == "different":
         st.markdown(f"<div class='data-label'>{DATA_STATUS}</div>", unsafe_allow_html=True)
         figure = schedule_timeline()
@@ -1034,18 +1110,52 @@ def render_visual(section_id: str) -> None:
                 )
                 companion = (
                     "<div class='source-companion'><strong>Related evidence:</strong> "
-                    f"{escape(citation['companion'])}{companion_link}<br>"
+                    f"<span class='citation-text'>{escape(citation['companion'])}</span>"
+                    f"{companion_link}<br>"
                     f"{escape(citation['companion_evidence'])}</div>"
                 )
             st.markdown(
                 f"<div class='source-item' id='source-{citation_id}'>"
                 f"<span class='source-label'>[{citation_id}] "
                 f"{escape(citation['label'])}</span><br>"
-                f"{escape(citation['reference'])}{link}"
+                f"<span class='citation-text'>{escape(citation['reference'])}</span>{link}"
                 f"<div class='source-evidence'><strong>What it supports:</strong> "
                 f"{escape(citation['evidence'])}</div>{companion}</div>",
                 unsafe_allow_html=True,
             )
+
+
+def render_navigation(is_reference_page: bool, current_index: int = 0) -> None:
+    previous_column, _, next_column = st.columns([1, 2.2, 1])
+    if is_reference_page:
+        with next_column:
+            st.button(
+                "return to takeaways",
+                type="primary",
+                on_click=go_to,
+                args=(LIVE_SECTION_IDS[-1],),
+                use_container_width=True,
+            )
+        return
+
+    with previous_column:
+        if current_index > 0:
+            st.button(
+                "previous",
+                on_click=go_to,
+                args=(LIVE_SECTION_IDS[current_index - 1],),
+                use_container_width=True,
+            )
+    with next_column:
+        has_next = current_index < len(LIVE_SECTION_IDS) - 1
+        next_id = LIVE_SECTION_IDS[current_index + 1] if has_next else LIVE_SECTION_IDS[0]
+        st.button(
+            "next" if has_next else "start again",
+            type="primary",
+            on_click=go_to,
+            args=(next_id,),
+            use_container_width=True,
+        )
 
 
 def render_presentation() -> None:
@@ -1061,6 +1171,7 @@ def render_presentation() -> None:
             unsafe_allow_html=True,
         )
         st.progress((current_index + 1) / len(LIVE_SECTION_IDS))
+    render_navigation(is_reference_page, 0 if is_reference_page else current_index)
     st.markdown("<div class='section-rule'></div>", unsafe_allow_html=True)
     st.markdown(f"<div class='eyebrow'>{escape(section['eyebrow'])}</div>", unsafe_allow_html=True)
     st.markdown(f"<h1 class='display-title'>{escape(section['title'])}</h1>", unsafe_allow_html=True)
@@ -1073,36 +1184,6 @@ def render_presentation() -> None:
     with visual_column:
         render_visual(current_id)
     render_endnotes(section["citations"])
-    st.markdown("<div class='section-rule'></div>", unsafe_allow_html=True)
-    previous_column, _, next_column = st.columns([1, 2.2, 1])
-    if is_reference_page:
-        with next_column:
-            st.button(
-                "Return to takeaways",
-                type="primary",
-                on_click=go_to,
-                args=(LIVE_SECTION_IDS[-1],),
-                use_container_width=True,
-            )
-    else:
-        with previous_column:
-            if current_index > 0:
-                st.button(
-                    "Previous",
-                    on_click=go_to,
-                    args=(LIVE_SECTION_IDS[current_index - 1],),
-                    use_container_width=True,
-                )
-        with next_column:
-            has_next = current_index < len(LIVE_SECTION_IDS) - 1
-            next_id = LIVE_SECTION_IDS[current_index + 1] if has_next else LIVE_SECTION_IDS[0]
-            st.button(
-                "Next" if has_next else "Start again",
-                type="primary",
-                on_click=go_to,
-                args=(next_id,),
-                use_container_width=True,
-            )
 
 
 def store_ai_result(tool: str, provider: str, prompt: str) -> None:
