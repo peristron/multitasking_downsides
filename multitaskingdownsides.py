@@ -202,7 +202,7 @@ SECTIONS = [
             ),
         ],
         "callout_type": "info",
-        "callout": "The goal isn't perfect focus. It's fewer avoidable switches.",
+        "callout": "The goal isn't perfect focus. That's unrealistic - ideal (maybe), but unrealistic. It's fewer avoidable switches&re-starts.",
         "citations": [1, 2],
     },
     {
