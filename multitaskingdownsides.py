@@ -1,4 +1,4 @@
-"""The Cost of Multitasking: monolithic Streamlit presentation and AI studio."""
+"""The Costs of Multitasking: monolithic Streamlit presentation and AI studio."""
 
 from __future__ import annotations
 
@@ -34,7 +34,6 @@ APP_TITLE = "The Cost of Multitasking"
 APP_SUBTITLE = "Why doing more at once often means finishing less"
 DATA_STATUS = "ILLUSTRATIVE PLACEHOLDER DATA - NOT RESEARCH FINDINGS"
 
-#>>>>>>>>>>>>>>>>
 ACTIVE_THEME = st.context.theme.type
 
 if ACTIVE_THEME == "dark":
@@ -61,8 +60,6 @@ else:
         "grid": "#D8D5CC",
         "sidebar": "#ECE9E0",
     }
-#<<<<<<<<<<<<<<<<
-
 CITATIONS = {
     1: {
         "placeholder": "CITE-1: Research review on task switching and executive control",
@@ -219,8 +216,34 @@ SECTIONS = [
         "citations": [5],
     },
     {
+        "id": "takeaways",
+        "nav_label": "6. Takeaways",
+        "eyebrow": "WHAT TO REMEMBER",
+        "title": "Protect attention where it matters most.",
+        "lead": (
+            "Complex work is usually not happening all at once. Attention is moving "
+            "between tasks, and every avoidable handoff asks the brain to stop, reload, "
+            "and find its place again. {cite:1}"
+        ),
+        "paragraphs": [
+            (
+                "Some of that attention can remain with the task you just left. The "
+                "result may be slower progress, more reconstruction, and less mental "
+                "room for the work in front of you. {cite:3}"
+            ),
+            (
+                "The practical response is not perfect concentration. Protect meaningful "
+                "blocks, batch smaller tasks, agree on what is truly urgent, and leave a "
+                "clear return note when you must switch. {cite:5}"
+            ),
+        ],
+        "callout_type": "info",
+        "callout": "Protect the work that needs your full attention. Reduce the switches you can control.",
+        "citations": [1, 3, 5],
+    },
+    {
         "id": "sources",
-        "nav_label": "Sources",
+        "nav_label": "Sources & editor notes",
         "eyebrow": "EDITOR'S CHECKLIST",
         "title": "Replace placeholders before you present the claims.",
         "lead": (
@@ -230,13 +253,15 @@ SECTIONS = [
         ),
         "paragraphs": [
             (
-                "Update CITATIONS in app.py. Then replace illustrative values in the data "
+                "Update CITATIONS in multitaskingdownsides.py. Then replace illustrative "
+                "values in the data "
                 "section and keep the data-status label visible until every chart has a "
                 "verified source."
             ),
             (
-                "For a live session, rehearse the sidebar jumps and Next flow once on the "
-                "deployed app. The summary below can serve as a closing slide."
+                "This reference page remains available from the sidebar but is intentionally "
+                "outside the live Next flow. Rehearse the six presentation slides once on "
+                "the deployed app before a session."
             ),
         ],
         "callout_type": "warning",
@@ -244,6 +269,8 @@ SECTIONS = [
         "citations": [],
     },
 ]
+
+LIVE_SECTION_IDS = [section["id"] for section in SECTIONS if section["id"] != "sources"]
 
 SUMMARY_POINTS = [
     "Complex work is usually switched, not truly multitasked.",
@@ -573,7 +600,9 @@ def schedule_timeline():
     return figure
 
 
-def _draw_wall(axis, completed: int, title: str, action: str, elapsed: int) -> None:
+def _draw_wall(
+    axis, completed: int, title: str, action: str, elapsed: int, completion_step: int
+) -> None:
     axis.clear()
     axis.set(xlim=(-0.4, 5.4), ylim=(-0.9, 4.5))
     axis.axis("off")
@@ -590,7 +619,9 @@ def _draw_wall(axis, completed: int, title: str, action: str, elapsed: int) -> N
     labels = {"build": "Placing the next brick", "switch": "Switching away",
               "reorient": "Finding the place again", "done": "Wall complete", "waiting": "Ready"}
     action_color = PALETTE["switch"] if action in {"switch", "reorient"} else PALETTE["focus"]
-    axis.text(0, -0.55, f"Step {elapsed:02d}  |  {labels[action]}", fontsize=11,
+    status_prefix = (f"Complete at step {completion_step:02d}"
+                     if action == "done" else f"Step {elapsed:02d}")
+    axis.text(0, -0.55, f"{status_prefix}  |  {labels[action]}", fontsize=11,
               color=action_color, fontweight="bold")
     axis.text(5, -0.55, f"{completed}/15 placed", fontsize=11, color=PALETTE["muted"], ha="right")
     if action == "switch":
@@ -598,11 +629,10 @@ def _draw_wall(axis, completed: int, title: str, action: str, elapsed: int) -> N
                                       mutation_scale=18, color=PALETTE["switch"], linewidth=2.5))
 
 
-#>>>>>>>>>>>>>>>>
 @st.cache_data(show_spinner=False)
 def block_animation_gif(theme_name: str) -> bytes:
-#<<<<<<<<<<<<<<<<
-    total_frames = max(len(FOCUS_SEQUENCE), len(SWITCH_SEQUENCE)) + 2
+    final_frame = max(len(FOCUS_SEQUENCE), len(SWITCH_SEQUENCE))
+    frame_sequence = list(range(final_frame + 1)) + [final_frame] * 6
     figure, axes = plt.subplots(1, 2, figsize=(12, 4.8))
     figure.patch.set_facecolor(PALETTE["paper"])
     figure.subplots_adjust(left=0.04, right=0.98, top=0.82, bottom=0.12, wspace=0.16)
@@ -612,16 +642,16 @@ def block_animation_gif(theme_name: str) -> bytes:
     def update(frame: int):
         focus_count = min(FOCUS_SEQUENCE[:frame].count("build"), 15)
         switch_count = min(SWITCH_SEQUENCE[:frame].count("build"), 15)
-        focus_action = (FOCUS_SEQUENCE[frame - 1] if 0 < frame <= len(FOCUS_SEQUENCE)
-                        else ("done" if frame > len(FOCUS_SEQUENCE) else "waiting"))
-        switch_action = (SWITCH_SEQUENCE[frame - 1] if 0 < frame <= len(SWITCH_SEQUENCE)
-                         else ("done" if frame > len(SWITCH_SEQUENCE) else "waiting"))
-        _draw_wall(axes[0], focus_count, "A. Protected focus", focus_action, frame)
-        _draw_wall(axes[1], switch_count, "B. Frequent switching", switch_action, frame)
+        focus_action = (FOCUS_SEQUENCE[frame - 1] if 0 < frame < len(FOCUS_SEQUENCE)
+                        else ("done" if frame >= len(FOCUS_SEQUENCE) else "waiting"))
+        switch_action = (SWITCH_SEQUENCE[frame - 1] if 0 < frame < len(SWITCH_SEQUENCE)
+                         else ("done" if frame >= len(SWITCH_SEQUENCE) else "waiting"))
+        _draw_wall(axes[0], focus_count, "A. Protected focus", focus_action, frame, 15)
+        _draw_wall(axes[1], switch_count, "B. Frequent switching", switch_action, frame, 30)
         heading.set_text(f"Two ways to finish the same work  |  elapsed step {frame:02d}")
         return [heading]
 
-    movie = animation.FuncAnimation(figure, update, frames=range(total_frames), interval=500,
+    movie = animation.FuncAnimation(figure, update, frames=frame_sequence, interval=500,
                                     repeat=True, blit=False)
     with NamedTemporaryFile(suffix=".gif") as temporary_gif:
         movie.save(temporary_gif.name, writer=animation.PillowWriter(fps=2), dpi=100)
@@ -637,7 +667,6 @@ def block_animation_gif(theme_name: str) -> bytes:
 def inject_styles() -> None:
     st.markdown("""
     <style>
-#>>>>>>>>>>>>>>>>
     :root {
         --paper:var(--background-color);
         --ink:var(--text-color);
@@ -645,9 +674,10 @@ def inject_styles() -> None:
         --focus:#46BFB1;
         --switch:var(--primary-color);
         --accent:#F2C14E;
+        --line:color-mix(in srgb, var(--text-color) 20%, transparent);
+        --data-label-bg:color-mix(in srgb, var(--accent) 18%, var(--background-color));
+        --data-label-text:var(--text-color);
     }
-#<<<<<<<<<<<<<<<<
-#>>>>>>>>>>>>>>>>
     .stApp { background:var(--background-color); color:var(--text-color); }
     [data-testid="stHeader"] {
         background:color-mix(in srgb, var(--background-color) 88%, transparent);
@@ -655,9 +685,8 @@ def inject_styles() -> None:
     [data-testid="stSidebar"] {
         background:var(--secondary-background-color);
     }
-#<<<<<<<<<<<<<<<<
     .block-container { max-width:1380px; padding-top:2.4rem; padding-bottom:3rem; }
-    .section-rule { border-top:1px solid #D8D5CC; margin:.6rem 0 1.7rem; }
+    .section-rule { border-top:1px solid var(--line); margin:.6rem 0 1.7rem; }
     .eyebrow { color:var(--switch); font-size:.78rem; font-weight:800; letter-spacing:.14em; }
     .display-title { color:var(--ink); font-size:clamp(2.7rem,5.4vw,5.4rem); line-height:.98;
                      font-weight:800; max-width:980px; margin:.55rem 0 1.2rem; }
@@ -665,20 +694,60 @@ def inject_styles() -> None:
             max-width:980px; margin-bottom:1.6rem; }
     .body-copy { color:var(--ink); font-size:1.12rem; line-height:1.68; max-width:850px; }
     .progress-copy { color:var(--muted); font-size:.85rem; font-weight:700; }
-    .data-label { display:inline-block; background:#FFF1C7; color:#6A4A00;
+    .data-label { display:inline-block; background:var(--data-label-bg); color:var(--data-label-text);
                   border-left:4px solid var(--accent); padding:.45rem .75rem;
                   margin:.4rem 0 1rem; font-size:.82rem; font-weight:800; }
-    .footnotes { border-top:1px solid #D8D5CC; margin-top:2rem; padding-top:1rem; }
+    .footnotes { border-top:1px solid var(--line); margin-top:2rem; padding-top:1rem; }
     .footnotes,.footnotes p { color:var(--muted); font-size:.83rem; line-height:1.5; }
-    .source-item { padding:1rem 0; border-bottom:1px solid #D8D5CC; }
+    .source-item { padding:1rem 0; border-bottom:1px solid var(--line); }
     .source-placeholder { color:var(--switch); font-weight:800; }
-    .summary-line { border-top:1px solid #D8D5CC; padding:.9rem 0; font-size:1.12rem; }
+    .summary-line { border-top:1px solid var(--line); padding:.9rem 0; font-size:1.12rem; }
     .ai-result { border-left:4px solid var(--focus); padding:.2rem 1rem; }
+    .attention-stage { border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+                       padding:1rem 0; margin-top:.25rem; }
+    .attention-kicker { color:var(--muted); font-size:.75rem; font-weight:800;
+                        letter-spacing:.12em; margin-bottom:.4rem; }
+    .attention-task { position:relative; display:grid; grid-template-columns:2.5rem 1fr auto;
+                      align-items:center; gap:.7rem; min-height:4.1rem;
+                      border-top:1px solid var(--line); color:var(--muted); opacity:.46;
+                      animation:attention-shift 4.8s infinite; }
+    .attention-task:nth-child(2) { animation-delay:1.6s; }
+    .attention-task:nth-child(3) { animation-delay:3.2s; }
+    .attention-number { font-size:.76rem; font-weight:800; color:var(--switch); }
+    .attention-name { font-size:1.18rem; font-weight:800; color:var(--ink); }
+    .attention-state { font-size:.82rem; font-weight:700; }
+    .attention-task::after { content:""; position:absolute; left:0; bottom:-1px;
+                             height:3px; width:100%; background:var(--switch);
+                             transform:scaleX(0); transform-origin:left;
+                             animation:attention-line 4.8s infinite; }
+    .attention-task:nth-child(2)::after { animation-delay:1.6s; }
+    .attention-task:nth-child(3)::after { animation-delay:3.2s; }
+    .attention-caption { color:var(--ink); font-size:1.05rem; font-weight:750;
+                         line-height:1.45; margin-top:1rem; max-width:34rem; }
+    .wall-summary { display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid var(--line);
+                    border-bottom:1px solid var(--line); margin-top:.5rem; }
+    .wall-summary-item { padding:1rem .8rem; border-right:1px solid var(--line); }
+    .wall-summary-item:last-child { border-right:0; }
+    .wall-summary-value { display:block; color:var(--ink); font-size:1.55rem; font-weight:850; }
+    .wall-summary-label { color:var(--muted); font-size:.78rem; font-weight:750; }
+    .concept-note { color:var(--muted); font-size:.76rem; margin-top:.5rem; }
+    @keyframes attention-shift {
+        0%,25% { opacity:1; transform:translateX(.35rem); }
+        34%,100% { opacity:.46; transform:translateX(0); }
+    }
+    @keyframes attention-line {
+        0% { transform:scaleX(0); }
+        8%,25% { transform:scaleX(1); }
+        34%,100% { transform:scaleX(0); }
+    }
     sup a { color:var(--switch)!important; font-weight:800; text-decoration:none!important; }
     div[data-testid="stButton"]>button { min-height:3rem; font-weight:750; border-radius:4px; }
     div[data-testid="stButton"]>button[kind="primary"] { background:var(--switch); border-color:var(--switch); }
     @media(max-width:700px) { .block-container{padding-top:1.5rem}.display-title{font-size:2.75rem}
-                             .lead{font-size:1.22rem} }
+                             .lead{font-size:1.22rem}.attention-task{grid-template-columns:2rem 1fr}
+                             .attention-state{grid-column:2}.wall-summary{grid-template-columns:1fr}
+                             .wall-summary-item{border-right:0;border-bottom:1px solid var(--line)} }
+    @media(prefers-reduced-motion:reduce) { .attention-task,.attention-task::after{animation:none} }
     @media print { [data-testid="stSidebar"],[data-testid="stHeader"],[data-testid="stButton"]
                    {display:none!important}.block-container{max-width:none;padding:0} }
     </style>
@@ -734,6 +803,15 @@ def render_admin_access() -> None:
     st.markdown("### Presenter AI")
     if st.session_state.admin_authenticated:
         st.success("Admin access active")
+        if st.button("Prepare presentation", use_container_width=True):
+            try:
+                with st.spinner("Preparing the animation..."):
+                    block_animation_gif(ACTIVE_THEME)
+                st.session_state.prepared_theme = ACTIVE_THEME
+            except (OSError, RuntimeError, ValueError):
+                st.error("The animation could not be prepared. Try opening Slide 4 once before presenting.")
+        if st.session_state.prepared_theme == ACTIVE_THEME:
+            st.caption(f"Presentation prepared for {ACTIVE_THEME} mode.")
         st.button("Open AI studio", on_click=open_ai_studio, use_container_width=True)
         st.button("Log out", on_click=log_out, use_container_width=True)
         return
@@ -769,10 +847,34 @@ def render_endnotes(citation_ids: list[int]) -> None:
 
 def render_visual(section_id: str) -> None:
     if section_id == "myth":
-        left, middle, right = st.columns(3)
-        left.metric("ONE TASK", "Momentum", "Protected")
-        middle.metric("ONE SWITCH", "Small cost", "Easy to miss")
-        right.metric("MANY SWITCHES", "Compounding drag", "Illustrative")
+        st.markdown(
+            """
+            <div class="attention-stage">
+                <div class="attention-kicker">ATTENTION IN MOTION</div>
+                <div class="attention-list">
+                    <div class="attention-task">
+                        <span class="attention-number">01</span>
+                        <span class="attention-name">Report</span>
+                        <span class="attention-state">Reload the argument</span>
+                    </div>
+                    <div class="attention-task">
+                        <span class="attention-number">02</span>
+                        <span class="attention-name">Inbox</span>
+                        <span class="attention-state">Answer the interruption</span>
+                    </div>
+                    <div class="attention-task">
+                        <span class="attention-number">03</span>
+                        <span class="attention-name">Team chat</span>
+                        <span class="attention-state">Rebuild the context</span>
+                    </div>
+                </div>
+                <div class="attention-caption">
+                    Your tools stay open. Your attention moves one task at a time.
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
     elif section_id == "brain":
         st.markdown(f"<div class='data-label'>{DATA_STATUS}</div>", unsafe_allow_html=True)
         st.plotly_chart(switching_cost_chart(), use_container_width=True, config={"displayModeBar": False})
@@ -781,18 +883,42 @@ def render_visual(section_id: str) -> None:
         st.plotly_chart(refocus_chart(), use_container_width=True, config={"displayModeBar": False})
     elif section_id == "building":
         st.markdown(f"<div class='data-label'>{DATA_STATUS}</div>", unsafe_allow_html=True)
-        with st.spinner("Building the animation for this session..."):
-#>>>>>>>>>>>>>>>>
-            st.image(
-                block_animation_gif(ACTIVE_THEME),
-                use_container_width=True,
-            )
-#<<<<<<<<<<<<<<<<
+        if st.session_state.prepared_theme == ACTIVE_THEME:
+            animation_bytes = block_animation_gif(ACTIVE_THEME)
+        else:
+            with st.spinner("Building the animation for this session..."):
+                animation_bytes = block_animation_gif(ACTIVE_THEME)
+            st.session_state.prepared_theme = ACTIVE_THEME
+        st.image(animation_bytes, use_container_width=True)
+        st.markdown(
+            """
+            <div class="wall-summary">
+                <div class="wall-summary-item">
+                    <span class="wall-summary-value">15 steps</span>
+                    <span class="wall-summary-label">Protected focus</span>
+                </div>
+                <div class="wall-summary-item">
+                    <span class="wall-summary-value">30 steps</span>
+                    <span class="wall-summary-label">Frequent switching</span>
+                </div>
+                <div class="wall-summary-item">
+                    <span class="wall-summary-value">Same wall</span>
+                    <span class="wall-summary-label">15 placed bricks</span>
+                </div>
+            </div>
+            <div class="concept-note">Conceptual steps for illustration, not measured research data.</div>
+            """,
+            unsafe_allow_html=True,
+        )
     elif section_id == "different":
         st.markdown(f"<div class='data-label'>{DATA_STATUS}</div>", unsafe_allow_html=True)
         figure = schedule_timeline()
         st.pyplot(figure, use_container_width=True)
         plt.close(figure)
+    elif section_id == "takeaways":
+        st.markdown("### Four ideas to carry forward")
+        for point in SUMMARY_POINTS:
+            st.markdown(f"<div class='summary-line'>{escape(point)}</div>", unsafe_allow_html=True)
     elif section_id == "sources":
         for citation_id, citation in CITATIONS.items():
             link = (f" <a href='{escape(citation['url'])}' target='_blank'>Open source</a>"
@@ -803,19 +929,21 @@ def render_visual(section_id: str) -> None:
                 f"{escape(citation['placeholder'])}</span><br>"
                 f"{escape(citation['reference'])}{link}</div>", unsafe_allow_html=True,
             )
-        st.markdown("### Closing summary")
-        for point in SUMMARY_POINTS:
-            st.markdown(f"<div class='summary-line'>{escape(point)}</div>", unsafe_allow_html=True)
 
 
 def render_presentation() -> None:
-    section_ids = [section["id"] for section in SECTIONS]
     current_id = st.session_state.active_section
-    current_index = section_ids.index(current_id)
     section = section_by_id(current_id)
-    st.markdown(f"<div class='progress-copy'>SECTION {current_index + 1} OF {len(SECTIONS)}</div>",
-                unsafe_allow_html=True)
-    st.progress((current_index + 1) / len(SECTIONS))
+    is_reference_page = current_id not in LIVE_SECTION_IDS
+    if is_reference_page:
+        st.markdown("<div class='progress-copy'>REFERENCE PAGE</div>", unsafe_allow_html=True)
+    else:
+        current_index = LIVE_SECTION_IDS.index(current_id)
+        st.markdown(
+            f"<div class='progress-copy'>SECTION {current_index + 1} OF {len(LIVE_SECTION_IDS)}</div>",
+            unsafe_allow_html=True,
+        )
+        st.progress((current_index + 1) / len(LIVE_SECTION_IDS))
     st.markdown("<div class='section-rule'></div>", unsafe_allow_html=True)
     st.markdown(f"<div class='eyebrow'>{escape(section['eyebrow'])}</div>", unsafe_allow_html=True)
     st.markdown(f"<h1 class='display-title'>{escape(section['title'])}</h1>", unsafe_allow_html=True)
@@ -830,14 +958,34 @@ def render_presentation() -> None:
     render_endnotes(section["citations"])
     st.markdown("<div class='section-rule'></div>", unsafe_allow_html=True)
     previous_column, _, next_column = st.columns([1, 2.2, 1])
-    with previous_column:
-        if current_index > 0:
-            st.button("Previous", on_click=go_to, args=(section_ids[current_index - 1],),
-                      use_container_width=True)
-    with next_column:
-        next_id = section_ids[current_index + 1] if current_index < len(section_ids) - 1 else section_ids[0]
-        next_label = "Next" if current_index < len(section_ids) - 1 else "Start again"
-        st.button(next_label, type="primary", on_click=go_to, args=(next_id,), use_container_width=True)
+    if is_reference_page:
+        with next_column:
+            st.button(
+                "Return to takeaways",
+                type="primary",
+                on_click=go_to,
+                args=(LIVE_SECTION_IDS[-1],),
+                use_container_width=True,
+            )
+    else:
+        with previous_column:
+            if current_index > 0:
+                st.button(
+                    "Previous",
+                    on_click=go_to,
+                    args=(LIVE_SECTION_IDS[current_index - 1],),
+                    use_container_width=True,
+                )
+        with next_column:
+            has_next = current_index < len(LIVE_SECTION_IDS) - 1
+            next_id = LIVE_SECTION_IDS[current_index + 1] if has_next else LIVE_SECTION_IDS[0]
+            st.button(
+                "Next" if has_next else "Start again",
+                type="primary",
+                on_click=go_to,
+                args=(next_id,),
+                use_container_width=True,
+            )
 
 
 def store_ai_result(tool: str, provider: str, prompt: str) -> None:
@@ -938,6 +1086,7 @@ defaults = {
     "admin_authenticated": False,
     "login_failures": 0,
     "ai_results": {},
+    "prepared_theme": "",
 }
 for key, value in defaults.items():
     if key not in st.session_state:
