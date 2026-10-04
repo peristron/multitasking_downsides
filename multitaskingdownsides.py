@@ -193,7 +193,7 @@ SECTIONS = [
             (
                 "Each switch is small, so its cost is easy to miss. Controlled studies find "
                 "slower responses after task switches and often more errors, too. {cite:1} "
-                "Workplace research also shows how fragmented a day can become. {cite:2}"
+                "Workplace research also shows how fragmented a day can become...but I think we all know this well from experience~ {cite:2}"
             ),
             (
                 "This presentation isn't an argument against collaboration or urgent "
