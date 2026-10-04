@@ -309,7 +309,7 @@ SECTIONS = [
             ),
         ],
         "callout_type": "info",
-        "callout": "Try one protected block this week. Measure what finishes, not how busy it feels.",
+        "callout": "Try one protected block this week. Measure what finishes, not how busy it feels (there's actually a saas analog here somewhere too~.",
         "citations": [5],
     },
     {
