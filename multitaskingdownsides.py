@@ -213,7 +213,7 @@ SECTIONS = [
         "lead": (
             "When you move from a report to a message and back again, you have to put one "
             "set of rules down and reload another. Researchers often describe the delay "
-            "and friction in that handoff as a switch cost. {cite:1}"
+            "and friction in that handoff as a ''switch cost''. {cite:1}"
         ),
         "paragraphs": [
             (
