@@ -271,15 +271,15 @@ SECTIONS = [
                 "so elapsed steps keep rising while the wall stands still."
             ),
             (
-                "It's a metaphor, not a productivity formula. Its purpose is to make "
+                "More so a metaphor, not a productivity formula. Its purpose is to make "
                 "invisible coordination costs visible. {cite:2}"
             ),
             (
-                "A physics metaphor adds another angle. Picture a loaded cart heading for "
+                "A very simple physics metaphor adds another angle. Picture a loaded cart heading for "
                 "a loading bay: a straight route keeps its momentum pointed toward the goal, "
                 "while each detour means slowing, redirecting, and accelerating again. Work "
                 "isn't a mechanical system, but returning to a task can feel like rebuilding "
-                "that direction and momentum."
+                "that direction and momentum - and potentially, depending on the person, introducing the increased likelihood of more operator errors (what do you think about that?)."
             ),
         ],
         "callout_type": "warning",
