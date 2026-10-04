@@ -706,7 +706,7 @@ def momentum_paths():
     routes = [
         ("straight route: momentum stays pointed at the goal", [(0, 0), (10, 0)], PALETTE["focus"]),
         (
-            "redirected route: each turn changes the momentum vector",
+            "redirected route: each turn means you're changing the momentum vector",
             [(0, 0), (2, 0), (3, 0.72), (4.2, -0.62), (5.7, 0.62), (7.1, -0.5), (10, 0)],
             PALETTE["switch"],
         ),
