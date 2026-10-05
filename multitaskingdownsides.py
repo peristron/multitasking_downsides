@@ -373,7 +373,7 @@ SUMMARY_POINTS = [
     "Complex work is usually switched, not truly multitasked.",
     "A switch creates a handoff: stop, reload, and find your place.",
     "Some attention can remain with the task you just left.",
-    "Protect focus with blocks, batches, clear urgency rules, and return notes.",
+    "Protect focus with blocks, batches, clear urgency rules, and return notes ('bookmarks').",
 ]
 
 # All values below are illustrative placeholders.
