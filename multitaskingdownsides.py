@@ -276,7 +276,7 @@ SECTIONS = [
             ),
         ],
         "callout_type": "warning",
-        "callout": "The animation timing is conceptual. Don't quote it as research data (but i'm fairly certain we can find research connecting caloric burn differences in this context, if we tried~).",
+        "callout": "The animation timing is conceptual. Don't quote it as research data (but i'm fairly certain we could even find research connecting caloric burn differences in this context, if we tried~).",
         "citations": [2],
     },
     {
