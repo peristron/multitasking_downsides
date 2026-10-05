@@ -251,7 +251,7 @@ SECTIONS = [
             ),
         ],
         "callout_type": "info",
-        "callout": "The interruption can be brief. Rebuilding your context can take longer.",
+        "callout": "The interruption can be brief. Rebuilding your context takes longer.",
         "citations": [3, 4],
     },
     {
