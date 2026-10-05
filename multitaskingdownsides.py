@@ -274,6 +274,18 @@ SECTIONS = [
                 "More so a metaphor, not a productivity formula. Its purpose is to make "
                 "invisible coordination costs visible. {cite:2}"
             ),
+        ],
+        "callout_type": "warning",
+        "callout": "The animation timing is conceptual. Don't quote it as research data (but i'm fairly certain we can find research connecting caloric burn differences in this context, if we tried~).",
+        "citations": [2],
+    },
+    {
+        "id": "momentum",
+        "nav_label": "5. Momentum & Direction",
+        "eyebrow": "A PHYSICS METAPHOR",
+        "title": "Momentum, direction, and the return.",
+        "lead": "The wall shows the delay. Physics gives us another angle.",
+        "paragraphs": [
             (
                 "A very simple physics metaphor adds another angle. Picture a loaded cart heading for "
                 "a loading bay: a straight route keeps its momentum pointed toward the goal, "
@@ -283,13 +295,13 @@ SECTIONS = [
                 "- also: See page 1 and source [1] for related research on switching and error rates, if interested."
             ),
         ],
-        "callout_type": "warning",
-        "callout": "The animation timing is conceptual. Don't quote it as research data (but i'm fairly certain we can find research connecting caloric burn differences in this context, if we tried~).",
-        "citations": [2],
+        "callout_type": "info",
+        "callout": "How well does this metaphor fit your own experience?",
+        "citations": [1],
     },
     {
         "id": "different",
-        "nav_label": "5. Doing It Differently",
+        "nav_label": "6. Doing It Differently",
         "eyebrow": "A PRACTICAL RESET",
         "title": "Make focus easier to choose.",
         "lead": (
@@ -315,7 +327,7 @@ SECTIONS = [
     },
     {
         "id": "takeaways",
-        "nav_label": "6. Takeaways",
+        "nav_label": "7. Takeaways",
         "eyebrow": "WHAT TO REMEMBER",
         "title": "Protect attention where it matters most (guard your precious attention).",
         "lead": (
@@ -1126,6 +1138,7 @@ def render_visual(section_id: str) -> None:
             """,
             unsafe_allow_html=True,
         )
+    elif section_id == "momentum":
         physics_figure = momentum_paths()
         st.pyplot(physics_figure, use_container_width=True)
         plt.close(physics_figure)
