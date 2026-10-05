@@ -279,7 +279,8 @@ SECTIONS = [
                 "a loading bay: a straight route keeps its momentum pointed toward the goal, "
                 "while each detour means slowing, redirecting, and accelerating again. Work "
                 "isn't a mechanical system, but returning to a task can feel like rebuilding "
-                "that direction and momentum - and potentially, depending on the person, introducing the increased likelihood of more operator errors (what do you think about that?)."
+                "that direction and momentum - and potentially, depending on the person, introducing the increased likelihood of more operator errors (what do you think about that?)" 
+                "- also: See page 1 and source [1] for related research on switching and error rates, if interested."
             ),
         ],
         "callout_type": "warning",
