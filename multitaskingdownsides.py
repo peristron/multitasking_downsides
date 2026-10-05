@@ -226,7 +226,7 @@ SECTIONS = [
             ),
         ],
         "callout_type": "warning",
-        "callout": "Illustrative data: the pattern is the point here, not the precise values (think of the numbers as visual placeholders~).",
+        "callout": "Illustrative data: the pattern is the point here, not the precise values (the direction of the pattern reflects published research; the plotted values are more so visual placeholders.).",
         "citations": [1],
     },
     {
