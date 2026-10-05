@@ -316,7 +316,7 @@ SECTIONS = [
         "id": "takeaways",
         "nav_label": "6. Takeaways",
         "eyebrow": "WHAT TO REMEMBER",
-        "title": "Protect attention where it matters most.",
+        "title": "Protect attention where it matters most (guard your precious attention).",
         "lead": (
             "Complex work isn't usually happening all at once. Attention is moving "
             "between tasks, and every avoidable handoff asks the brain to stop, reload, "
