@@ -1134,7 +1134,7 @@ def render_visual(section_id: str) -> None:
         st.pyplot(figure, use_container_width=True)
         plt.close(figure)
     elif section_id == "takeaways":
-        st.markdown("### Four ideas to carry forward")
+        st.markdown("### Some ideas to consider carrying forward...")
         for point in SUMMARY_POINTS:
             st.markdown(f"<div class='summary-line'>{escape(point)}</div>", unsafe_allow_html=True)
     elif section_id == "sources":
