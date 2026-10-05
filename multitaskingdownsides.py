@@ -222,7 +222,7 @@ SECTIONS = [
             ),
             (
                 "This chart is mostly a  visual model, not necessarily a measured claim. Values "
-                "are more so placeholders to give a sense of the compounding costs."
+                "are more so placeholders to give us a good sense of the compounding costs."
             ),
         ],
         "callout_type": "warning",
