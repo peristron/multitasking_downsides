@@ -247,7 +247,7 @@ SECTIONS = [
             ),
             (
                 "This curve is fairly illustrative, showing the idea of gradual "
-                "recovery; YMMV for for personal, minute-by-minute timing~."
+                "recovery; YMMV for personal, minute-by-minute timing~."
             ),
         ],
         "callout_type": "info",
