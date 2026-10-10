@@ -326,8 +326,34 @@ SECTIONS = [
         "citations": [5],
     },
     {
+        "id": "focus_dividend",
+        "nav_label": "7. The Focus Dividend",
+        "eyebrow": "A BACK-OF-THE-ENVELOPE MODEL",
+        "title": "What could fewer switches add up to in a week?",
+        "lead": (
+            "Research supports the existence of task-switching costs, but it does not give us "
+            "one universal number of minutes lost per switch. So this is intentionally a simple "
+            "scenario model: change the assumptions and see what the cumulative effect could look like. {cite:1}"
+        ),
+        "paragraphs": [
+            (
+                "Start conservatively. If you avoid 12 unnecessary switches in a day, and each one "
+                "saves only 45 seconds of stopping, re-orienting, and restarting, that is about "
+                "9 minutes reclaimed in a day - or 45 minutes across a five-day week."
+            ),
+            (
+                "The point isn't that 45 seconds is a measured universal switch cost. It isn't. The "
+                "point is how quickly small restart costs can accumulate. And the time estimate still "
+                "doesn't try to price in attention residue, extra errors, or the stress effects discussed elsewhere. {cite:3} {cite:5}"
+            ),
+        ],
+        "callout_type": "info",
+        "callout": "Treat this as a scenario calculator, not a productivity promise. The assumptions are yours; the arithmetic is transparent.",
+        "citations": [1, 3, 5],
+    },
+    {
         "id": "takeaways",
-        "nav_label": "7. Takeaways",
+        "nav_label": "8. Takeaways",
         "eyebrow": "WHAT TO REMEMBER",
         "title": "Protect attention where it matters most (guard your precious attention).",
         "lead": (
@@ -370,7 +396,7 @@ SECTIONS = [
             ),
             (
                 "This reference page stays available from the sidebar but is intentionally "
-                "outside the live Next flow. Rehearse the six presentation slides once on "
+                "outside the live Next flow. Rehearse the eight presentation slides once on "
                 "the deployed app before a session."
             ),
         ],
@@ -1073,6 +1099,73 @@ def render_endnotes(citation_ids: list[int]) -> None:
     st.markdown("".join(lines) + "</div>", unsafe_allow_html=True)
 
 
+def render_focus_dividend() -> None:
+    """Render an interactive scenario model for cumulative time reclaimed."""
+    st.markdown("### try your own assumptions")
+    st.caption(
+        "this is a logic-based scenario model, not a measured universal productivity formula."
+    )
+
+    switch_col, restart_col = st.columns(2)
+    with switch_col:
+        avoided_switches = st.slider(
+            "avoidable switches per day",
+            min_value=0,
+            max_value=40,
+            value=12,
+            step=1,
+            key="focus_dividend_switches",
+        )
+    with restart_col:
+        restart_seconds = st.slider(
+            "assumed restart cost per switch (seconds)",
+            min_value=10,
+            max_value=180,
+            value=45,
+            step=5,
+            key="focus_dividend_seconds",
+        )
+
+    days_col, weeks_col = st.columns(2)
+    with days_col:
+        workdays = st.slider(
+            "workdays per week",
+            min_value=1,
+            max_value=7,
+            value=5,
+            step=1,
+            key="focus_dividend_days",
+        )
+    with weeks_col:
+        working_weeks = st.slider(
+            "working weeks per year",
+            min_value=1,
+            max_value=52,
+            value=48,
+            step=1,
+            key="focus_dividend_weeks",
+        )
+
+    daily_minutes = avoided_switches * restart_seconds / 60
+    weekly_minutes = daily_minutes * workdays
+    yearly_hours = weekly_minutes * working_weeks / 60
+
+    daily_metric, weekly_metric, yearly_metric = st.columns(3)
+    daily_metric.metric("reclaimed / day", f"{daily_minutes:.1f} min")
+    weekly_metric.metric("reclaimed / week", f"{weekly_minutes:.0f} min")
+    yearly_metric.metric("reclaimed / year", f"{yearly_hours:.1f} hr")
+
+    st.info(
+        "with the default assumptions: 12 avoided switches x 45 seconds = 9 minutes/day, "
+        "45 minutes/week, and 36 hours across 48 working weeks."
+    )
+    st.caption(
+        "energy/stress note: this calculator quantifies time only. the presentation discusses "
+        "stress and cognitive effort qualitatively because the cited studies do not provide a "
+        "clean universal energy-per-switch conversion."
+    )
+
+
 def render_visual(section_id: str) -> None:
     if section_id == "myth":
         st.markdown(
@@ -1147,6 +1240,8 @@ def render_visual(section_id: str) -> None:
         figure = schedule_timeline()
         st.pyplot(figure, use_container_width=True)
         plt.close(figure)
+    elif section_id == "focus_dividend":
+        render_focus_dividend()
     elif section_id == "takeaways":
         st.markdown("### Some ideas to consider carrying forward...")
         for point in SUMMARY_POINTS:
