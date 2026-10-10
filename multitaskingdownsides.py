@@ -226,7 +226,7 @@ SECTIONS = [
             ),
         ],
         "callout_type": "warning",
-        "callout": "Illustrative data: the pattern is the point here, not the precise values (the direction of the pattern reflects published research; the plotted values are more so visual placeholders.).",
+        "callout": "Illustrative data: the pattern is the point here, not the precise values (we shouldn't be too attached to the exact numbers here. it’s the shape that's interesting: directionally, the effect keeps pointing the same way, supporting something structural vs. just incidental)",
         "citations": [1],
     },
     {
