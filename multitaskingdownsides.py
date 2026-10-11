@@ -1242,7 +1242,7 @@ def render_visual(section_id: str) -> None:
         plt.close(figure)
     elif section_id == "focus_dividend":
         render_focus_dividend()
-<<<<<<<
+
     elif section_id == "takeaways":
         st.markdown("### Some ideas to consider carrying forward...")
         for point in SUMMARY_POINTS:
