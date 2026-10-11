@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hmac
+import time
 from html import escape
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -16,6 +17,7 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import requests
 import streamlit as st
+from supabase import create_client
 from matplotlib import animation
 from matplotlib.patches import FancyArrowPatch, Patch, Rectangle
 
@@ -33,6 +35,13 @@ st.set_page_config(
 APP_TITLE = "the cost of multitasking"
 APP_SUBTITLE = "why doing more at once often means finishing less"
 DATA_STATUS = "illustrative placeholder data - not research findings"
+DISCUSSION_TABLE = "audience_comments"
+DISCUSSION_DEFAULT_SESSION = "multitasking-live"
+DISCUSSION_MAX_MESSAGE_CHARS = 240
+DISCUSSION_MAX_NAME_CHARS = 32
+DISCUSSION_VISIBLE_COMMENTS = 6
+DISCUSSION_REFRESH_SECONDS = 3
+DISCUSSION_SUBMIT_COOLDOWN_SECONDS = 2.0
 
 ACTIVE_THEME = st.context.theme.type
 
@@ -948,6 +957,10 @@ def inject_styles() -> None:
     .wall-summary-value { display:block; color:var(--ink); font-size:1.55rem; font-weight:850; }
     .wall-summary-label { color:var(--muted); font-size:.78rem; font-weight:750; }
     .concept-note { color:var(--muted); font-size:.76rem; margin-top:.5rem; }
+    .live-discussion-note { color:var(--muted); font-size:.75rem; line-height:1.45; margin:.15rem 0 .7rem; }
+    .live-comment { border-top:1px solid var(--line); padding:.65rem 0 .55rem; }
+    .live-comment-name { color:var(--switch); font-size:.74rem; font-weight:800; margin-bottom:.15rem; }
+    .live-comment-message { color:var(--ink); font-size:.88rem; line-height:1.42; overflow-wrap:anywhere; }
     @keyframes attention-shift {
         0%,25% { opacity:1; transform:translateX(.35rem); }
         34%,100% { opacity:.46; transform:translateX(0); }
@@ -1047,6 +1060,137 @@ def check_password(password: str) -> bool:
     return bool(configured_password) and hmac.compare_digest(password, configured_password)
 
 
+def discussion_session_id() -> str:
+    """Resolve the shared discussion session, with an optional URL override."""
+    query_session = str(st.query_params.get("session", "")).strip()
+    configured_session = secret_value("DISCUSSION_SESSION_ID", DISCUSSION_DEFAULT_SESSION)
+    resolved = query_session or configured_session or DISCUSSION_DEFAULT_SESSION
+    safe = "".join(character for character in resolved if character.isalnum() or character in {"-", "_"})
+    return safe[:64] or DISCUSSION_DEFAULT_SESSION
+
+
+def discussion_configured() -> bool:
+    return bool(secret_value("SUPABASE_URL") and (secret_value("SUPABASE_SECRET_KEY") or secret_value("SUPABASE_KEY")))
+
+
+@st.cache_resource
+def discussion_supabase_client():
+    """Create one server-side Supabase client; secrets are never sent to the browser."""
+    url = secret_value("SUPABASE_URL")
+    key = secret_value("SUPABASE_SECRET_KEY") or secret_value("SUPABASE_KEY")
+    if not url or not key:
+        return None
+    return create_client(url, key)
+
+
+def fetch_discussion_comments(limit: int = DISCUSSION_VISIBLE_COMMENTS) -> list[dict[str, Any]]:
+    client = discussion_supabase_client()
+    if client is None:
+        return []
+    response = (
+        client.table(DISCUSSION_TABLE)
+        .select("id,created_at,name,message")
+        .eq("session_id", discussion_session_id())
+        .eq("hidden", False)
+        .order("created_at", desc=True)
+        .limit(limit)
+        .execute()
+    )
+    return list(response.data or [])
+
+
+def submit_discussion_comment(name: str, message: str) -> None:
+    client = discussion_supabase_client()
+    if client is None:
+        raise RuntimeError("live discussion is not configured")
+
+    clean_name = " ".join(name.split()).strip()[:DISCUSSION_MAX_NAME_CHARS] or "anonymous"
+    clean_message = " ".join(message.split()).strip()[:DISCUSSION_MAX_MESSAGE_CHARS]
+    if not clean_message:
+        raise ValueError("enter a comment before sending")
+
+    client.table(DISCUSSION_TABLE).insert({
+        "session_id": discussion_session_id(),
+        "name": clean_name,
+        "message": clean_message,
+        "hidden": False,
+    }).execute()
+
+
+def clear_discussion_session() -> None:
+    client = discussion_supabase_client()
+    if client is None:
+        raise RuntimeError("live discussion is not configured")
+    client.table(DISCUSSION_TABLE).delete().eq("session_id", discussion_session_id()).execute()
+
+
+def render_discussion_feed() -> None:
+    try:
+        comments = fetch_discussion_comments()
+    except Exception:
+        st.caption("live discussion is temporarily unavailable")
+        return
+
+    if not comments:
+        st.caption("no comments yet")
+        return
+
+    for comment in comments:
+        name = escape(str(comment.get("name") or "anonymous"))
+        message = escape(str(comment.get("message") or ""))
+        st.markdown(
+            f"<div class='live-comment'><div class='live-comment-name'>{name}</div>"
+            f"<div class='live-comment-message'>{message}</div></div>",
+            unsafe_allow_html=True,
+        )
+
+
+@st.fragment(run_every=DISCUSSION_REFRESH_SECONDS)
+def render_live_discussion() -> None:
+    """Shared, lightweight audience discussion that refreshes without rerunning the presentation."""
+    st.markdown("### live discussion")
+    st.markdown(
+        "<div class='live-discussion-note'>question, thought, or reaction? brief is best. "
+        "the latest comments refresh automatically.</div>",
+        unsafe_allow_html=True,
+    )
+
+    if not discussion_configured():
+        st.caption("discussion will appear here once supabase is configured")
+        return
+
+    with st.form("audience_comment_form", clear_on_submit=True):
+        name = st.text_input(
+            "name / initials (optional)",
+            max_chars=DISCUSSION_MAX_NAME_CHARS,
+            placeholder="anonymous is fine",
+        )
+        message = st.text_area(
+            "comment",
+            max_chars=DISCUSSION_MAX_MESSAGE_CHARS,
+            placeholder="question, thought, or reaction...",
+            height=86,
+        )
+        submitted = st.form_submit_button("send", use_container_width=True)
+
+    if submitted:
+        now = time.time()
+        last_submit = float(st.session_state.get("discussion_last_submit_at", 0.0))
+        if now - last_submit < DISCUSSION_SUBMIT_COOLDOWN_SECONDS:
+            st.warning("please wait a moment before sending another comment")
+        else:
+            try:
+                submit_discussion_comment(name, message)
+                st.session_state.discussion_last_submit_at = now
+                st.success("sent")
+            except ValueError as exc:
+                st.warning(str(exc))
+            except Exception:
+                st.error("the comment could not be sent right now")
+
+    render_discussion_feed()
+
+
 def render_admin_access() -> None:
     st.markdown("---")
     st.markdown("### Presenter AI")
@@ -1062,6 +1206,13 @@ def render_admin_access() -> None:
         if st.session_state.prepared_theme == ACTIVE_THEME:
             st.caption(f"Presentation prepared for {ACTIVE_THEME} mode.")
         st.button("Open AI studio", on_click=open_ai_studio, use_container_width=True)
+        if discussion_configured():
+            if st.button("Clear live discussion", use_container_width=True):
+                try:
+                    clear_discussion_session()
+                    st.success("Live discussion cleared.")
+                except Exception:
+                    st.error("The live discussion could not be cleared.")
         st.button("Log out", on_click=log_out, use_container_width=True)
         return
 
@@ -1242,14 +1393,10 @@ def render_visual(section_id: str) -> None:
         plt.close(figure)
     elif section_id == "focus_dividend":
         render_focus_dividend()
-
     elif section_id == "takeaways":
         st.markdown("### Some ideas to consider carrying forward...")
         for point in SUMMARY_POINTS:
-            st.markdown(
-                f"<div class='summary-line'>{escape(point)}</div>",
-                unsafe_allow_html=True,
-            )
+            st.markdown(f"<div class='summary-line'>{escape(point)}</div>", unsafe_allow_html=True)
 
         st.markdown(
             """
@@ -1267,11 +1414,7 @@ def render_visual(section_id: str) -> None:
             """,
             unsafe_allow_html=True,
         )
-
     elif section_id == "sources":
-
-
-        
         for citation_id, citation in CITATIONS.items():
             link = (
                 f" <a href='{escape(citation['url'])}' target='_blank' "
@@ -1462,6 +1605,7 @@ defaults = {
     "login_failures": 0,
     "ai_results": {},
     "prepared_theme": "",
+    "discussion_last_submit_at": 0.0,
 }
 for key, value in defaults.items():
     if key not in st.session_state:
@@ -1484,6 +1628,8 @@ with st.sidebar:
                  format_func=lambda section_id: section_labels[section_id],
                  key="section_picker", on_change=sync_sidebar)
     st.button("Restart presentation", on_click=go_to, args=(section_ids[0],), use_container_width=True)
+    st.markdown("---")
+    render_live_discussion()
     render_admin_access()
 
 if st.session_state.view_mode == "ai":
