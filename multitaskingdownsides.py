@@ -1106,25 +1106,36 @@ def inject_styles() -> None:
     .wall-summary-value { display:block; color:var(--ink); font-size:1.55rem; font-weight:850; }
     .wall-summary-label { color:var(--muted); font-size:.78rem; font-weight:750; }
     .concept-note { color:var(--muted); font-size:.76rem; margin-top:.5rem; }
-    .live-discussion-note { color:var(--muted); font-size:.75rem; line-height:1.45; margin:.15rem 0 .7rem; }
+    .live-discussion-note {
+        color:var(--muted);
+        font-size:.75rem;
+        line-height:1.45;
+        margin:.15rem 0 .7rem;
+    }
     [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) {
-        background:color-mix(in srgb, var(--text-color) 9%, var(--secondary-background-color));
-        border:1px solid color-mix(in srgb, var(--text-color) 24%, transparent);
-        border-radius:8px;
-        padding:.8rem;
-        margin-bottom:.7rem;
+        background:color-mix(in srgb, var(--text-color) 16%, var(--secondary-background-color));
+        border:1px solid color-mix(in srgb, var(--text-color) 42%, transparent);
+        border-radius:10px;
+        padding:.9rem;
+        margin-bottom:.8rem;
+        box-shadow:0 0 0 1px color-mix(in srgb, var(--text-color) 8%, transparent);
     }
     [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) input,
     [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) textarea {
-        background:color-mix(in srgb, var(--text-color) 8%, var(--background-color))!important;
-        border-color:color-mix(in srgb, var(--text-color) 28%, transparent)!important;
+        background:color-mix(in srgb, var(--text-color) 20%, var(--background-color))!important;
+        border:1px solid color-mix(in srgb, var(--text-color) 46%, transparent)!important;
+        border-radius:7px!important;
+    }
+    [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) button {
+        background:color-mix(in srgb, var(--text-color) 18%, var(--secondary-background-color))!important;
+        border-color:color-mix(in srgb, var(--text-color) 42%, transparent)!important;
     }
     .live-comment {
-        background:color-mix(in srgb, var(--text-color) 7%, var(--secondary-background-color));
-        border:1px solid var(--line);
-        border-radius:7px;
-        padding:.65rem .7rem;
-        margin-bottom:.5rem;
+        background:color-mix(in srgb, var(--text-color) 14%, var(--secondary-background-color));
+        border:1px solid color-mix(in srgb, var(--text-color) 30%, transparent);
+        border-radius:8px;
+        padding:.72rem .78rem;
+        margin-bottom:.58rem;
     }
     .live-comment-name { color:var(--switch); font-size:.74rem; font-weight:800; margin-bottom:.15rem; }
     .live-comment-message { color:var(--ink); font-size:.88rem; line-height:1.42; overflow-wrap:anywhere; }
@@ -1176,6 +1187,28 @@ def inject_styles() -> None:
         .source-item a,.footnotes a{overflow-wrap:anywhere;word-break:break-word}
         [data-testid="stSidebar"]{max-width:min(88vw,21rem)!important}
         [data-testid="stSidebar"] *{overflow-wrap:break-word}
+        [data-testid="stSidebar"] > div,
+        [data-testid="stSidebarContent"] {
+            background:color-mix(
+                in srgb,
+                var(--secondary-background-color) 82%,
+                var(--text-color) 18%
+            )!important;
+        }
+        [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) {
+            background:color-mix(in srgb, var(--text-color) 22%, var(--secondary-background-color));
+            border-color:color-mix(in srgb, var(--text-color) 50%, transparent);
+            box-shadow:0 0 0 1px color-mix(in srgb, var(--text-color) 12%, transparent);
+        }
+        [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) input,
+        [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) textarea {
+            background:color-mix(in srgb, var(--text-color) 26%, var(--background-color))!important;
+            border-color:color-mix(in srgb, var(--text-color) 54%, transparent)!important;
+        }
+        .live-comment {
+            background:color-mix(in srgb, var(--text-color) 18%, var(--secondary-background-color));
+            border-color:color-mix(in srgb, var(--text-color) 38%, transparent);
+        }
     }
     @media(prefers-reduced-motion:reduce) { .attention-task,.attention-task::after{animation:none} }
     @media print { [data-testid="stSidebar"],[data-testid="stHeader"],[data-testid="stButton"]
