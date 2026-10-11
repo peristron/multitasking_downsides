@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hmac
 import time
+from datetime import datetime, timezone
 from html import escape
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -1124,6 +1125,30 @@ def clear_discussion_session() -> None:
     client.table(DISCUSSION_TABLE).delete().eq("session_id", discussion_session_id()).execute()
 
 
+def relative_time_label(created_at: str) -> str:
+    """Convert a Supabase timestamp into a short relative age."""
+    try:
+        created = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
+        now = datetime.now(timezone.utc)
+        seconds = max(0, int((now - created).total_seconds()))
+    except (TypeError, ValueError):
+        return ""
+
+    if seconds < 45:
+        return "just now"
+
+    minutes = seconds // 60
+    if minutes < 60:
+        return f"{minutes} min ago"
+
+    hours = minutes // 60
+    if hours < 24:
+        return f"{hours} hr ago"
+
+    days = hours // 24
+    return f"{days} day{'s' if days != 1 else ''} ago"
+
+
 def render_discussion_feed() -> None:
     try:
         comments = fetch_discussion_comments()
@@ -1138,9 +1163,13 @@ def render_discussion_feed() -> None:
     for comment in comments:
         name = escape(str(comment.get("name") or "anonymous"))
         message = escape(str(comment.get("message") or ""))
+        age = escape(relative_time_label(str(comment.get("created_at") or "")))
+        meta = f"{name} · {age}" if age else name
         st.markdown(
-            f"<div class='live-comment'><div class='live-comment-name'>{name}</div>"
-            f"<div class='live-comment-message'>{message}</div></div>",
+            f"<div class='live-comment'>"
+            f"<div class='live-comment-name'>{meta}</div>"
+            f"<div class='live-comment-message'>{message}</div>"
+            f"</div>",
             unsafe_allow_html=True,
         )
 
