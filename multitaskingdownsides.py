@@ -1127,8 +1127,10 @@ def inject_styles() -> None:
         border-radius:7px!important;
     }
     [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) button {
-        background:color-mix(in srgb, var(--text-color) 18%, var(--secondary-background-color))!important;
-        border-color:color-mix(in srgb, var(--text-color) 42%, transparent)!important;
+        background:color-mix(in srgb, var(--text-color) 20%, var(--background-color))!important;
+        border:1px solid color-mix(in srgb, var(--text-color) 46%, transparent)!important;
+        color:var(--text-color)!important;
+        border-radius:7px!important;
     }
     .live-comment {
         background:color-mix(in srgb, var(--text-color) 14%, var(--secondary-background-color));
@@ -1204,6 +1206,11 @@ def inject_styles() -> None:
         [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) textarea {
             background:color-mix(in srgb, var(--text-color) 26%, var(--background-color))!important;
             border-color:color-mix(in srgb, var(--text-color) 54%, transparent)!important;
+        }
+        [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) button {
+            background:color-mix(in srgb, var(--text-color) 26%, var(--background-color))!important;
+            border-color:color-mix(in srgb, var(--text-color) 54%, transparent)!important;
+            color:var(--text-color)!important;
         }
         .live-comment {
             background:color-mix(in srgb, var(--text-color) 18%, var(--secondary-background-color));
