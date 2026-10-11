@@ -1243,9 +1243,26 @@ def render_visual(section_id: str) -> None:
     elif section_id == "focus_dividend":
         render_focus_dividend()
     elif section_id == "takeaways":
-        st.markdown("### Some ideas to consider carrying forward...")
-        for point in SUMMARY_POINTS:
-            st.markdown(f"<div class='summary-line'>{escape(point)}</div>", unsafe_allow_html=True)
+    st.markdown("### Some ideas to consider carrying forward...")
+    for point in SUMMARY_POINTS:
+        st.markdown(f"<div class='summary-line'>{escape(point)}</div>", unsafe_allow_html=True)
+
+    st.markdown(
+        """
+        <div class="concept-note" style="margin-top:1.5rem; line-height:1.6;">
+            a related discussion: if multitasking is partly about what happens
+            <em>after</em> attention moves, notification fatigue asks what happens
+            when too many systems compete to move it in the first place.
+            <br><br>
+            <a href="https://notificationsfatigue.streamlit.app/"
+               target="_blank"
+               rel="noopener noreferrer">
+                explore the notification fatigue presentation →
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     elif section_id == "sources":
         for citation_id, citation in CITATIONS.items():
             link = (
