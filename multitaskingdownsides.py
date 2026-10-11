@@ -43,6 +43,9 @@ DISCUSSION_MAX_NAME_CHARS = 32
 DISCUSSION_VISIBLE_COMMENTS = 6
 DISCUSSION_REFRESH_SECONDS = 3
 DISCUSSION_SUBMIT_COOLDOWN_SECONDS = 2.0
+DISCUSSION_AI_PREFERRED_PROVIDER = "SEA-LION"
+DISCUSSION_AI_TIMEOUT_SECONDS = 8.0
+DISCUSSION_AI_MAX_TOKENS = 320
 
 ACTIVE_THEME = st.context.theme.type
 
@@ -655,6 +658,151 @@ def call_ai(provider_name: str, user_prompt: str, max_tokens: int = 900) -> str:
     return answer
 
 
+def call_ai_with_timeout(
+    provider_name: str,
+    user_prompt: str,
+    max_tokens: int = DISCUSSION_AI_MAX_TOKENS,
+    read_timeout_seconds: float = DISCUSSION_AI_TIMEOUT_SECONDS,
+) -> str:
+    """Call one configured AI provider with a short, discussion-specific timeout."""
+    config = PROVIDERS[provider_name]
+    api_key = secret_value(config["key"])
+    model = secret_value(config["model"])
+    endpoint = secret_value(config["endpoint_secret"], config["endpoint"])
+
+    if not is_configured_secret(api_key) or not model:
+        raise AIServiceError(f"{provider_name} is not fully configured in Streamlit secrets.")
+    if not endpoint.startswith("https://"):
+        raise AIServiceError(f"{provider_name} must use an HTTPS endpoint.")
+
+    body = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": user_prompt},
+        ],
+        "max_tokens": max_tokens,
+        "temperature": 0.3,
+        "stream": False,
+    }
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
+
+    try:
+        response = http_session().post(
+            endpoint,
+            headers=headers,
+            json=body,
+            timeout=(5, read_timeout_seconds),
+        )
+    except requests.Timeout as exc:
+        raise AIServiceError(
+            f"{provider_name} did not respond within {read_timeout_seconds:.0f} seconds."
+        ) from exc
+    except requests.RequestException as exc:
+        raise AIServiceError(f"Could not connect to {provider_name}.") from exc
+
+    if not response.ok:
+        detail = ""
+        try:
+            error_payload = response.json()
+            error_value = error_payload.get("error", "")
+            if isinstance(error_value, dict):
+                detail = str(error_value.get("message", ""))
+            elif error_value:
+                detail = str(error_value)
+            elif error_payload.get("message"):
+                detail = str(error_payload["message"])
+        except (ValueError, AttributeError):
+            detail = ""
+        detail = detail.replace(api_key, "[credential removed]")[:300]
+        suffix = f" Provider message: {detail}" if detail else ""
+        raise AIServiceError(f"{provider_name} returned HTTP {response.status_code}.{suffix}")
+
+    try:
+        answer = _response_text(response.json(), config["schema"])
+    except ValueError as exc:
+        raise AIServiceError(f"{provider_name} returned invalid JSON.") from exc
+    if not answer:
+        raise AIServiceError(f"{provider_name} returned an empty answer.")
+    return answer
+
+
+def discussion_provider_order() -> list[str]:
+    """Prefer SEA-LION, then fall back through the other configured providers."""
+    configured = configured_providers()
+    if DISCUSSION_AI_PREFERRED_PROVIDER in configured:
+        configured.remove(DISCUSSION_AI_PREFERRED_PROVIDER)
+        return [DISCUSSION_AI_PREFERRED_PROVIDER, *configured]
+    return configured
+
+
+def call_discussion_ai_with_fallback(
+    user_prompt: str,
+    max_tokens: int = DISCUSSION_AI_MAX_TOKENS,
+) -> tuple[str, str, list[str]]:
+    """Try SEA-LION first, then each other configured provider until one succeeds."""
+    providers = discussion_provider_order()
+    if not providers:
+        raise AIServiceError("No AI provider is configured for the discussion assistant.")
+
+    failures: list[str] = []
+    for provider_name in providers:
+        try:
+            answer = call_ai_with_timeout(
+                provider_name,
+                user_prompt,
+                max_tokens=max_tokens,
+                read_timeout_seconds=DISCUSSION_AI_TIMEOUT_SECONDS,
+            )
+            return answer, provider_name, failures
+        except AIServiceError as exc:
+            failures.append(f"{provider_name}: {exc}")
+
+    raise AIServiceError(
+        "No configured AI provider returned a usable response. "
+        + " | ".join(failures[-3:])
+    )
+
+
+def compact_presentation_context() -> str:
+    """Provide concise, evidence-aware context to the live discussion assistant."""
+    section_lines = []
+    for section in SECTIONS:
+        if section["id"] == "sources":
+            continue
+        section_lines.append(f"{section['nav_label']}: {plain_section_text(section)}")
+
+    evidence_lines = []
+    for citation_id, citation in CITATIONS.items():
+        evidence_lines.append(f"[{citation_id}] {citation['label']}: {citation['evidence']}")
+        if citation.get("companion_evidence"):
+            evidence_lines.append(
+                f"[{citation_id}] related evidence: {citation['companion_evidence']}"
+            )
+
+    return (
+        "PRESENTATION CONTENT:\n"
+        + "\n\n".join(section_lines)
+        + "\n\nEVIDENCE BOUNDARIES:\n"
+        + "\n".join(evidence_lines)
+    )
+
+
+def discussion_comment_label(comment: dict[str, Any]) -> str:
+    """Build a compact selector label for a live audience comment."""
+    name = str(comment.get("name") or "anonymous")
+    age = relative_time_label(str(comment.get("created_at") or ""))
+    message = " ".join(str(comment.get("message") or "").split())
+    if len(message) > 72:
+        message = message[:69] + "..."
+    age_part = f" · {age}" if age else ""
+    return f"{name}{age_part} — {message}"
+
+
 # -----------------------------------------------------------------------------
 # Graphics
 # -----------------------------------------------------------------------------
@@ -959,9 +1107,28 @@ def inject_styles() -> None:
     .wall-summary-label { color:var(--muted); font-size:.78rem; font-weight:750; }
     .concept-note { color:var(--muted); font-size:.76rem; margin-top:.5rem; }
     .live-discussion-note { color:var(--muted); font-size:.75rem; line-height:1.45; margin:.15rem 0 .7rem; }
-    .live-comment { border-top:1px solid var(--line); padding:.65rem 0 .55rem; }
+    [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) {
+        background:color-mix(in srgb, var(--text-color) 9%, var(--secondary-background-color));
+        border:1px solid color-mix(in srgb, var(--text-color) 24%, transparent);
+        border-radius:8px;
+        padding:.8rem;
+        margin-bottom:.7rem;
+    }
+    [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) input,
+    [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) textarea {
+        background:color-mix(in srgb, var(--text-color) 8%, var(--background-color))!important;
+        border-color:color-mix(in srgb, var(--text-color) 28%, transparent)!important;
+    }
+    .live-comment {
+        background:color-mix(in srgb, var(--text-color) 7%, var(--secondary-background-color));
+        border:1px solid var(--line);
+        border-radius:7px;
+        padding:.65rem .7rem;
+        margin-bottom:.5rem;
+    }
     .live-comment-name { color:var(--switch); font-size:.74rem; font-weight:800; margin-bottom:.15rem; }
     .live-comment-message { color:var(--ink); font-size:.88rem; line-height:1.42; overflow-wrap:anywhere; }
+    .discussion-ai-meta { color:var(--muted); font-size:.78rem; line-height:1.45; margin:.2rem 0 .8rem; }
     @keyframes attention-shift {
         0%,25% { opacity:1; transform:translateX(.35rem); }
         34%,100% { opacity:.46; transform:translateX(0); }
@@ -1554,6 +1721,136 @@ def render_result(tool: str, filename: str) -> None:
                        use_container_width=False)
 
 
+
+def render_live_discussion_assistant() -> None:
+    """Private presenter-side AI help for the shared audience discussion."""
+    st.markdown("### live discussion assistant")
+    st.markdown(
+        "<div class='discussion-ai-meta'>"
+        "private presenter aid. SEA-LION is tried first; if it times out or fails, "
+        "the app tries the next configured provider. nothing is posted publicly."
+        "</div>",
+        unsafe_allow_html=True,
+    )
+
+    try:
+        comments = fetch_discussion_comments(limit=DISCUSSION_VISIBLE_COMMENTS)
+    except Exception:
+        st.error("the live discussion could not be loaded right now.")
+        return
+
+    if not comments:
+        st.info("no live audience comments are available yet.")
+        return
+
+    options = {str(comment["id"]): comment for comment in comments}
+    selected_id = st.selectbox(
+        "audience comment",
+        options=list(options.keys()),
+        format_func=lambda comment_id: discussion_comment_label(options[comment_id]),
+        key="discussion_assistant_comment_id",
+    )
+    selected = options[selected_id]
+
+    selected_name = escape(str(selected.get("name") or "anonymous"))
+    selected_age = escape(relative_time_label(str(selected.get("created_at") or "")))
+    selected_meta = f"{selected_name} · {selected_age}" if selected_age else selected_name
+    st.markdown(
+        f"<div class='live-comment'>"
+        f"<div class='live-comment-name'>{selected_meta}</div>"
+        f"<div class='live-comment-message'>{escape(str(selected.get('message') or ''))}</div>"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
+
+    response_col, summary_col = st.columns(2)
+
+    with response_col:
+        draft_clicked = st.button(
+            "draft short response",
+            type="primary",
+            key="discussion_ai_draft",
+            use_container_width=True,
+        )
+
+    with summary_col:
+        summary_clicked = st.button(
+            "what is the room talking about?",
+            key="discussion_ai_summary",
+            use_container_width=True,
+        )
+
+    if draft_clicked:
+        prompt = (
+            "You are privately assisting the presenter during a live 15-minute workplace presentation. "
+            "Draft a concise spoken response to the audience comment below. Aim for roughly 2 to 4 sentences. "
+            "Be conversational, acknowledge useful nuance, and stay within the supplied presentation evidence. "
+            "If the comment asks for something the sources do not support, say that briefly rather than inventing. "
+            "Do not mention that you are an AI. Do not address the audience member by name unless it helps naturally. "
+            "Return only the suggested spoken response.\n\n"
+            f"AUDIENCE COMMENT:\n{selected.get('message', '')}\n\n"
+            f"{compact_presentation_context()}"
+        )
+        try:
+            with st.spinner(
+                f"trying {DISCUSSION_AI_PREFERRED_PROVIDER} first, then fallback providers if needed..."
+            ):
+                answer, used_provider, failures = call_discussion_ai_with_fallback(prompt)
+            st.session_state.discussion_ai_response = answer
+            st.session_state.discussion_ai_response_provider = used_provider
+            st.session_state.discussion_ai_response_failures = failures
+        except AIServiceError as exc:
+            st.error(str(exc))
+
+    if summary_clicked:
+        comment_lines = []
+        for comment in comments:
+            comment_lines.append(
+                f"- {comment.get('name') or 'anonymous'}: {comment.get('message') or ''}"
+            )
+        prompt = (
+            "You are privately assisting the presenter during a live 15-minute workplace presentation. "
+            "Summarize what the room is talking about based only on the audience comments below. "
+            "Give 2 to 4 short bullets: recurring questions, counterpoints, examples, or themes worth addressing. "
+            "Do not invent consensus and do not answer the questions yet. "
+            "Return only the short presenter-facing summary.\n\n"
+            "LIVE COMMENTS:\n"
+            + "\n".join(comment_lines)
+        )
+        try:
+            with st.spinner(
+                f"trying {DISCUSSION_AI_PREFERRED_PROVIDER} first, then fallback providers if needed..."
+            ):
+                answer, used_provider, failures = call_discussion_ai_with_fallback(prompt)
+            st.session_state.discussion_ai_summary = answer
+            st.session_state.discussion_ai_summary_provider = used_provider
+            st.session_state.discussion_ai_summary_failures = failures
+        except AIServiceError as exc:
+            st.error(str(exc))
+
+    response = st.session_state.get("discussion_ai_response", "")
+    if response:
+        provider_used = st.session_state.get("discussion_ai_response_provider", "")
+        st.markdown("#### suggested response")
+        if provider_used:
+            st.caption(f"generated privately with {provider_used}")
+        st.markdown(
+            f"<div class='ai-result'>{escape(response).replace(chr(10), '<br>')}</div>",
+            unsafe_allow_html=True,
+        )
+
+    summary = st.session_state.get("discussion_ai_summary", "")
+    if summary:
+        provider_used = st.session_state.get("discussion_ai_summary_provider", "")
+        st.markdown("#### room summary")
+        if provider_used:
+            st.caption(f"generated privately with {provider_used}")
+        st.markdown(
+            f"<div class='ai-result'>{escape(summary).replace(chr(10), '<br>')}</div>",
+            unsafe_allow_html=True,
+        )
+
+
 def render_ai_studio() -> None:
     if not st.session_state.admin_authenticated:
         st.session_state.view_mode = "presentation"
@@ -1575,7 +1872,9 @@ def render_ai_studio() -> None:
         selected_section = next(section for section in SECTIONS if section["nav_label"] == selected_label)
         st.info("AI output is a review draft. It does not change the presentation automatically.")
     with workspace_column:
-        notes_tab, qa_tab, rewrite_tab = st.tabs(["Speaker notes", "Audience Q&A", "Rewrite lab"])
+        discussion_tab, notes_tab, qa_tab, rewrite_tab = st.tabs(["Live discussion assistant", "Speaker notes", "Audience Q&A", "Rewrite lab"])
+        with discussion_tab:
+            render_live_discussion_assistant()
         with notes_tab:
             goal = st.text_area("Presenter emphasis", placeholder="Example: Add a 60-second workplace example.",
                                 key="notes_goal", max_chars=1200)
@@ -1635,6 +1934,12 @@ defaults = {
     "ai_results": {},
     "prepared_theme": "",
     "discussion_last_submit_at": 0.0,
+    "discussion_ai_response": "",
+    "discussion_ai_response_provider": "",
+    "discussion_ai_response_failures": [],
+    "discussion_ai_summary": "",
+    "discussion_ai_summary_provider": "",
+    "discussion_ai_summary_failures": [],
 }
 for key, value in defaults.items():
     if key not in st.session_state:
