@@ -1,127 +1,290 @@
-# The Cost of Multitasking: AI-enabled monolith
+# The Cost of Multitasking
 
-A presenter-led Streamlit app about task switching and protected focus. The
-presentation, content, data, graphics, navigation, authentication, and AI adapters
-are deliberately contained in one `multitaskingdownsides.py`.
+A presenter-led Streamlit app about task switching, interruption, attention residue, protected focus, and the cumulative cost of repeated context switching.
 
-> **Evidence status:** Citations and chart values are intentionally marked as
-> placeholders. Replace and verify them before presenting any value as a research
-> finding.
+Live app:
 
-## AI features
+https://multitaskingd0wnsides.streamlit.app/
 
-The password-protected **Presenter AI** workspace provides:
+The application is intentionally kept as a mostly monolithic Streamlit presentation in `multitaskingdownsides.py`, with presentation content, graphics, navigation, evidence notes, live audience participation, and presenter AI tools in one deployable app.
 
-- Speaker-note generation for any presentation section
-- Draft answers to audience questions
-- Section-revision drafts
-- Provider selection using only providers configured in Streamlit secrets
+## What the app includes
 
-AI drafts never modify the live presentation. Prompts and section text are sent to
-the selected external provider, so do not enter confidential workplace information.
+- eight presentation sections plus a sources/evidence page
+- responsive desktop and mobile presentation layout
+- previous/next and jump-to-section navigation
+- research-grounded citations and evidence notes
+- illustrative charts and animations
+- an interactive focus-dividend scenario calculator
+- a shared live audience discussion feed
+- relative timestamps on audience comments
+- optional presenter AI tools behind an admin password
+- a live discussion assistant that can draft private presenter responses to audience comments
+- a related link to the separate Notification Fatigue presentation
 
-## Files
+The presentation deliberately distinguishes research findings from illustrative values. Charts, animations, and scenario-model values should not be presented as measured findings unless explicitly identified that way in the app.
+
+## Live audience discussion
+
+The sidebar includes a lightweight shared discussion area intended for short audience questions, reactions, and comments during a presentation.
+
+Participants can:
+
+- post anonymously or provide a short name/initials
+- submit a brief comment
+- see recent comments from other attendees
+- see comments in newest-first order
+- see relative timestamps such as `just now`, `5 min ago`, or `1 hr ago`
+
+The discussion feed refreshes automatically using a Streamlit fragment, so new comments can appear without reloading the presentation or resetting the current slide.
+
+The mobile discussion form is intentionally styled so the name field, comment field, and SEND button are visually distinct from the presentation content underneath the sidebar overlay.
+
+## Why Supabase is used
+
+Normal Streamlit session state is isolated per visitor. A comment stored only in `st.session_state` would therefore be visible only to the person who submitted it.
+
+Supabase provides the shared persistence layer needed for all attendees to read and write to the same live discussion.
+
+The app uses a Supabase Postgres table named:
 
 ```text
-multitaskingdownsides.py                         # Complete application
-requirements.txt              # Pinned Python packages
-.streamlit/config.toml         # Visual theme and server settings
-.streamlit/secrets.toml.example
-.gitignore                     # Excludes local secrets
-tests/test_integrity.py        # Static safety and structure checks
-README.md
+audience_comments
 ```
 
-## Configure secrets
+The table stores:
 
-Do not commit `.streamlit/secrets.toml` to GitHub. For local use, create that file
-from `.streamlit/secrets.toml.example`. For Community Cloud, paste the same TOML into
-**App settings > Secrets**.
+- `id`
+- `session_id`
+- `name`
+- `message`
+- `hidden`
+- `created_at`
 
-At minimum, configure the password and one provider:
+Comments are retrieved newest-first.
+
+The authenticated presenter can also clear the current live discussion session.
+
+## Discussion sessions
+
+The default discussion session is:
+
+```text
+multitasking-live
+```
+
+A different session can be selected with the optional `session` query-string parameter:
+
+```text
+https://multitaskingd0wnsides.streamlit.app/?session=example-session
+```
+
+This allows separate presentation events to use the same Supabase table without mixing their comments.
+
+Examples:
+
+```text
+?session=october-session
+?session=november-session
+```
+
+If a custom session URL is used for an event, the QR code shown to attendees should point to that same URL so the presenter and audience are in the same discussion session.
+
+## Supabase configuration
+
+The deployed app expects these values in Streamlit Community Cloud under:
+
+**App settings -> Secrets**
 
 ```toml
-APP_PASSWORD = "replace-with-a-strong-unique-password"
-
-DEEPSEEK_API_KEY = "replace-with-your-api-key"
-DEEPSEEK_MODEL = "replace-with-your-model-name"
+SUPABASE_URL = "https://YOUR-PROJECT.supabase.co"
+SUPABASE_SECRET_KEY = "sb_secret_..."
+DISCUSSION_SESSION_ID = "multitasking-live"
 ```
 
-Supported secret-name pairs:
+The Supabase secret key must remain server-side.
 
-| Provider | API key | Model |
-|---|---|---|
-| DeepSeek | `DEEPSEEK_API_KEY` | `DEEPSEEK_MODEL` |
-| Kimi | `KIMI_API_KEY` | `KIMI_MODEL` |
-| Qwen | `QWEN_API_KEY` | `QWEN_MODEL` |
-| GLM | `GLM_API_KEY` | `GLM_MODEL` |
-| MiniMax | `MINIMAX_API_KEY` | `MINIMAX_MODEL` |
-| Mistral | `MISTRAL_API_KEY` | `MISTRAL_MODEL` |
-| Cohere | `COHERE_API_KEY` | `COHERE_MODEL` |
-| SEA-LION | `SEALION_API_KEY` | `SEALION_MODEL` |
+Do not commit the secret key to GitHub or place it directly in `multitaskingdownsides.py`.
 
-Only fully configured providers appear in the app. Each default endpoint can be
-overridden with a matching secret such as `GLM_ENDPOINT` or `MISTRAL_ENDPOINT`.
+### Why no repository `secrets.toml` is required
 
-Qwen API keys are region-bound. The built-in default is the legacy international
-endpoint, which Alibaba currently says remains functional. For a workspace-specific
-deployment, add the full regional chat-completions endpoint:
+For the deployed Streamlit Community Cloud app, secrets entered through the Streamlit settings interface are exposed to the Python application through `st.secrets`.
 
-```toml
-QWEN_ENDPOINT = "https://YOUR_WORKSPACE_ID.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions"
+A repository-level `.streamlit/secrets.toml` is therefore not required for the hosted deployment.
+
+A local `.streamlit/secrets.toml` can be used when running the app locally, but it should not be committed to source control.
+
+The repository's `.streamlit/config.toml`, if present, is for Streamlit configuration and appearance. It is separate from secret storage.
+
+## Supabase table setup
+
+The live discussion requires a one-time Supabase database setup.
+
+A minimal version is:
+
+```sql
+create table if not exists public.audience_comments (
+    id bigint generated by default as identity primary key,
+    session_id text not null,
+    name text not null default 'anonymous',
+    message text not null,
+    hidden boolean not null default false,
+    created_at timestamptz not null default now()
+);
+
+create index if not exists audience_comments_session_created_idx
+    on public.audience_comments (session_id, created_at desc);
+
+alter table public.audience_comments enable row level security;
+
+grant all on table public.audience_comments to service_role;
+grant usage, select on sequence public.audience_comments_id_seq to service_role;
 ```
 
-## Security boundaries
+This setup is persistent. It does not need to be recreated for each presentation.
 
-- API keys are read only from `st.secrets` and sent server-to-server.
-- Key values are never displayed, logged, cached, or included in error messages.
-- Password comparison uses `hmac.compare_digest`.
-- Authentication lasts for the current Streamlit session and includes a logout.
-- Provider calls require HTTPS and use connection and read timeouts.
-- The password gate is suitable for a private presenter utility, but it is not a
-  substitute for organization-level identity, audit logs, or role-based access.
-- The public presentation does not require a password. Only Presenter AI is gated.
+## Presenter AI
 
-If any unredacted key has ever been pasted into a public place, revoke and replace it
-before deployment.
+The app contains optional presenter-only AI tools behind the configured admin password.
+
+The presenter workspace currently includes:
+
+- live discussion assistant
+- speaker notes
+- audience Q&A
+- rewrite lab
+
+The AI tools do not modify presentation content automatically.
+
+### Live discussion assistant
+
+The live discussion assistant reuses the audience comments already stored in Supabase.
+
+It can:
+
+- let the presenter select a recent audience comment
+- draft a short private spoken response
+- summarize what the room is talking about across the latest comments
+
+The assistant is intended as a presenter aid, not as an autonomous public chatbot.
+
+AI-generated responses remain private to the presenter and are not automatically posted back into the public discussion feed.
+
+### Provider behavior
+
+The live discussion assistant prefers:
+
+```text
+SEA-LION
+```
+
+SEA-LION is tried first for live discussion assistance.
+
+The assistant uses a short timeout. If SEA-LION fails or does not respond within the configured window, the app tries the next configured provider.
+
+Other presenter AI tools keep their existing provider-selection behavior.
+
+Supported provider adapters include:
+
+- DeepSeek
+- Kimi
+- Qwen
+- GLM
+- MiniMax
+- Mistral
+- Cohere
+- SEA-LION
+
+Provider credentials and model names are read from Streamlit Secrets.
+
+## Related presentation: Notification Fatigue
+
+The final takeaways section links to a companion Streamlit presentation:
+
+https://notificationsfatigue.streamlit.app/
+
+The two presentations are related but distinct.
+
+A useful conceptual bridge between them is:
+
+> multitasking asks what happens after attention moves; notification fatigue asks what happens when too many systems compete to move it in the first place.
+
+The Notification Fatigue app explores signal versus noise, notification relevance, timing, frequency, user control, and the design of notification systems.
+
+## Repository structure
+
+Typical deployment:
+
+```text
+.
+├── multitaskingdownsides.py
+├── requirements.txt
+├── README.md
+└── .streamlit/
+    └── config.toml
+```
+
+Secrets for the hosted app are configured in Streamlit Community Cloud and are intentionally not stored in the repository.
+
+## Requirements
+
+The current dependency set includes:
+
+```text
+streamlit
+matplotlib
+plotly
+requests
+pillow
+supabase
+```
+
+Install locally with:
+
+```bash
+pip install -r requirements.txt
+```
 
 ## Run locally
 
-Use Python 3.12 or newer:
-
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
 streamlit run multitaskingdownsides.py
 ```
 
-On Windows PowerShell, activate with `.venv\Scripts\Activate.ps1`.
+If using the live discussion locally, create `.streamlit/secrets.toml` on your own machine with the required Supabase values and keep that file out of Git.
 
-## Deploy to Streamlit Community Cloud
+## Security notes
 
-1. Upload the contents of this folder to the root of a GitHub repository.
-2. Confirm `.streamlit/secrets.toml` is not in the repository.
-3. In Streamlit Community Cloud, create a new app from that repository.
-4. Choose `multitaskingdownsides.py` as the entrypoint and Python 3.12 in Advanced settings.
-5. Paste your real secret values into **App settings > Secrets**.
-6. Deploy and test one provider at a time.
+- never commit `SUPABASE_SECRET_KEY`
+- never expose AI provider credentials in the repository
+- keep presenter/admin authentication credentials in Streamlit Secrets
+- audience comments are user-generated content and should be treated as untrusted input
+- the app escapes displayed comment content before rendering it
+- the live discussion is intentionally lightweight and should not be treated as a permanent moderated forum
+- use a fresh `session` value for separate presentation events when desired
 
-## Live verification checklist
+## Recommended presentation-day workflow
 
-1. Confirm all six presentation sections and Next/Previous navigation work.
-2. Unlock Presenter AI with the configured password, then log out and confirm it locks.
-3. Generate a short speaker-note draft with each configured provider.
-4. Confirm an invalid model name produces a friendly error without showing a key.
-5. Confirm the four presentation graphics render and the GIF loops.
-6. Keep all placeholder warnings visible until citations and data are finalized.
+A practical sequence is:
 
-## Local integrity checks
+1. Open the deployed app on the presenter computer before the session starts.
+2. Log into the presenter/admin area.
+3. Optionally click **Prepare presentation** so the animation is warmed before the session.
+4. Decide whether to reuse the default discussion session, clear the existing discussion, or use a fresh `?session=` value for this event.
+5. If using a fresh session URL, make sure the presentation QR code points to that exact URL.
+6. Open the AI studio once and confirm that the **Live discussion assistant** loads and that at least one AI provider is reachable.
+7. Return to the normal presentation view before the audience arrives.
+8. Put the QR code on screen and invite attendees to open the app.
+9. Attendees can use the live discussion immediately. They do not need the presenter/admin login.
+10. Keep the sidebar visible on the presenter device if you want to watch comments arrive live.
+11. If a comment is worth addressing, open **Presenter AI -> Live discussion assistant**, select the comment, and request a short private draft.
+12. Return to the presentation and respond verbally if time permits.
+13. After the session, either leave the session intact for reference, clear it, or use a new session ID next time.
 
-```bash
-python -m compileall multitaskingdownsides.py tests
-python -m unittest discover -s tests -v
-```
+Important: logging into the admin area does not turn the public discussion on or off. The live discussion is available independently to attendees. The admin area simply gives the presenter extra controls and the private AI assistance layer.
 
-The app intentionally has no automatic provider fallback. Selecting the provider
-explicitly prevents an unexpected prompt from being sent to a different company.
+## Presentation use
+
+The app is designed for presenter-led sessions where attendees can scan a QR code, load the same Streamlit app, follow along, and optionally contribute short comments or questions through the shared discussion feed.
+
+The current format is optimized for a short session, with audience participation functioning as an ambient backchannel rather than as a separate discussion application.
