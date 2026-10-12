@@ -1207,10 +1207,16 @@ def inject_styles() -> None:
             background:color-mix(in srgb, var(--text-color) 26%, var(--background-color))!important;
             border-color:color-mix(in srgb, var(--text-color) 54%, transparent)!important;
         }
-        [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) button {
-            background:var(--primary-color)!important;
-            border-color:color-mix(in srgb, var(--text-color) 54%, transparent)!important;
-            color:var(--text-color)!important;
+        [data-testid="stSidebar"]
+        [data-testid="stForm"]:has(textarea)
+        [data-testid="stFormSubmitButton"] button {
+            background:#FF735C !important;
+            border:2px solid #FF735C !important;
+            color:#FFFFFF !important;
+            font-weight:800 !important;
+            text-transform:uppercase !important;
+            min-height:3.25rem !important;
+            border-radius:7px !important;
         }
         .live-comment {
             background:color-mix(in srgb, var(--text-color) 18%, var(--secondary-background-color));
