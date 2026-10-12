@@ -1407,7 +1407,7 @@ def render_live_discussion() -> None:
             placeholder="question, thought, or reaction...",
             height=86,
         )
-        submitted = st.form_submit_button("send", use_container_width=True)
+        submitted = st.form_submit_button("send", type="primary", use_container_width=True)
 
     if submitted:
         now = time.time()
