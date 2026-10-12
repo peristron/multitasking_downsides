@@ -1912,7 +1912,12 @@ def render_ai_studio() -> None:
         return
     control_column, workspace_column = st.columns([0.7, 1.5], gap="large")
     with control_column:
-        provider = st.selectbox("AI provider", providers, key="ai_provider")
+        provider = st.selectbox(
+            "AI provider",
+            providers,
+            index=providers.index("SEA-LION") if "SEA-LION" in providers else 0,
+            key="ai_provider",
+        )
         st.caption(f"Model: {secret_value(PROVIDERS[provider]['model'])}")
         selected_label = st.selectbox("Presentation section", [s["nav_label"] for s in SECTIONS[:-1]])
         selected_section = next(section for section in SECTIONS if section["nav_label"] == selected_label)
