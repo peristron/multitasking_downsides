@@ -1379,7 +1379,7 @@ def render_focus_dividend() -> None:
     """Render an interactive scenario model for cumulative time reclaimed."""
     st.markdown("### try your own assumptions")
     st.caption(
-        "this is a logic-based scenario model, not a measured universal productivity formula."
+        "(this is a logic-based scenario model, not really a measured universal-productivity formula)"
     )
 
     switch_col, restart_col = st.columns(2)
