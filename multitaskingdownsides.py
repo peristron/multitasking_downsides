@@ -972,6 +972,15 @@ def inject_styles() -> None:
     .attention-task:nth-child(3)::after { animation-delay:3.2s; }
     .attention-caption { color:var(--ink); font-size:1.05rem; font-weight:750;
                          line-height:1.45; margin-top:1rem; max-width:34rem; }
+    .priority-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.55rem; margin:.7rem 0 .9rem; }
+    .priority-cell { min-height:6.3rem; border-radius:9px; padding:.9rem 1rem; display:flex; flex-direction:column; justify-content:center; gap:.35rem; color:#101b20; border:1px solid rgba(255,255,255,.16); }
+    .priority-cell strong { font-size:1.18rem; font-weight:850; line-height:1.15; }
+    .priority-cell span { font-size:.88rem; font-weight:650; line-height:1.35; }
+    .priority-manage { background:#f4b35d; }
+    .priority-focus { background:#62c4e2; }
+    .priority-minimize { background:#b9d77b; }
+    .priority-limit { background:#d48fba; }
+    @media(max-width:700px) { .priority-grid {gap:.4rem;} .priority-cell {padding:.65rem;min-height:5.8rem;} .priority-cell strong {font-size:1rem;} .priority-cell span {font-size:.75rem;} }
     .wall-summary { display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid var(--line);
                     border-bottom:1px solid var(--line); margin-top:.5rem; }
     .wall-summary-item { padding:1rem .8rem; border-right:1px solid var(--line); }
@@ -1502,13 +1511,17 @@ def render_visual(section_id: str) -> None:
         plt.close(physics_figure)
     elif section_id == "different":
         st.markdown("### a simple prioritization lens")
-        q1, q2 = st.columns(2)
-        with q1:
-            st.markdown("**manage**  \nimportant + urgent")
-            st.markdown("**minimize**  \nnot important + urgent")
-        with q2:
-            st.markdown("**focus**  \nimportant + not urgent")
-            st.markdown("**limit**  \nnot important + not urgent")
+        st.markdown(
+            """
+            <div class="priority-grid" role="img" aria-label="four quadrants: manage, important and urgent; focus, important and not urgent; minimize, not important and urgent; limit, not important and not urgent">
+                <div class="priority-cell priority-manage"><strong>manage</strong><span>important + urgent</span></div>
+                <div class="priority-cell priority-focus"><strong>focus</strong><span>important + not urgent</span></div>
+                <div class="priority-cell priority-minimize"><strong>minimize</strong><span>not important + urgent</span></div>
+                <div class="priority-cell priority-limit"><strong>limit</strong><span>not important + not urgent</span></div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         st.caption("the same request may fall into different quadrants for different people.")
         st.markdown(f"<div class='data-label'>{DATA_STATUS}</div>", unsafe_allow_html=True)
         figure = schedule_timeline()
