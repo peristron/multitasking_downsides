@@ -197,7 +197,7 @@ SECTIONS = [
         "title": "busy isn't the same as effective.",
         "lead": "ever get more done before everyone arrives, or after everyone leaves? what changed?",
         "paragraphs": [
-            "the work didn't get easier. the switching got quieter. fewer incoming demands can protect continuity. {cite:2}",
+            "what happened? the work didn't get easier; the switching just got quieter. fewer incoming demands protected you...continuity. {cite:2}",
             "for work that needs thought, multitasking usually means switching between tasks, not doing them simultaneously. {cite:1}",
         ],
         "callout_type": "info", "callout": "the goal isn't silence all day. it's fewer avoidable restarts.",
