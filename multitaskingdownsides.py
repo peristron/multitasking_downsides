@@ -219,7 +219,7 @@ SECTIONS = [
         "title": "the interruption ends. the effect doesn't.",
         "lead": "some attention can stay with the task you just left. {cite:3}",
         "paragraphs": [
-            "returning may mean rereading, reconstructing context, or finding your place again.",
+            "returning means rereading, reconstructing context, and/or finding your place again.",
             "a short return note can help you resume after an interruption. {cite:4}",
         ],
         "callout_type": "info", "callout": "the recovery curve is conceptual, not a measured timeline.",
