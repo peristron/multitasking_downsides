@@ -1519,7 +1519,7 @@ def render_visual(section_id: str) -> None:
                     <span class="wall-summary-label">15 placed bricks</span>
                 </div>
             </div>
-            <div class="concept-note">Conceptual steps for illustration, not measured research data.</div>
+            <div class="concept-note">Conceptual steps for illustration, not neccessarily measured research data.</div>
             """,
             unsafe_allow_html=True,
         )
