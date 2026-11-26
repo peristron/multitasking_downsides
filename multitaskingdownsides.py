@@ -205,7 +205,7 @@ SECTIONS = [
     },
     {
         "id": "brain", "nav_label": "2. what your brain does", "eyebrow": "the mechanism",
-        "title": "every switch asks you to reload.",
+        "title": "every switch demands a little reload.",
         "lead": "report. message. report again. each handoff changes the goal and the rules. {cite:1}",
         "paragraphs": [
             "a single switch may feel small. repeated switches add friction and can increase errors. {cite:1}",
