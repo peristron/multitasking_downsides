@@ -216,7 +216,7 @@ SECTIONS = [
     },
     {
         "id": "costs", "nav_label": "3. the hidden costs", "eyebrow": "what lingers",
-        "title": "the interruption ends. the effect may not.",
+        "title": "the interruption ends. the effect doesn't.",
         "lead": "some attention can stay with the task you just left. {cite:3}",
         "paragraphs": [
             "returning may mean rereading, reconstructing context, or finding your place again.",
