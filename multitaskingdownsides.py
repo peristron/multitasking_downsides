@@ -233,7 +233,7 @@ SECTIONS = [
             "watch the focused path build continuously while the switching path pauses to leave and reorient.",
             "the steps are a metaphor, not a productivity formula or research measurement.",
         ],
-        "callout_type": "info", "callout": "same destination. different trip.",
+        "callout_type": "info", "callout": "same destination. different trip. (...also likely a better wall~)",
         "citations": [2],
     },
     {
