@@ -1069,15 +1069,34 @@ def inject_styles() -> None:
             overflow-wrap:anywhere;
         }
         .source-item a,.footnotes a{overflow-wrap:anywhere;word-break:break-word}
-        [data-testid="stSidebar"]{max-width:min(88vw,21rem)!important}
+        /* mobile-only sidebar contrast; no changes to app state or navigation */
+        [data-testid="stSidebar"] {
+            max-width:min(88vw,21rem)!important;
+            background:#1C2A32!important;
+            border-right:1px solid #40535C!important;
+            box-shadow:8px 0 24px rgba(0,0,0,.35);
+        }
         [data-testid="stSidebar"] *{overflow-wrap:break-word}
         [data-testid="stSidebar"] > div,
         [data-testid="stSidebarContent"] {
-            background:color-mix(
-                in srgb,
-                var(--secondary-background-color) 82%,
-                var(--text-color) 18%
-            )!important;
+            background:#1C2A32!important;
+            opacity:1!important;
+        }
+        /* preserve native Streamlit toggle behavior; improve touch visibility */
+        [data-testid="stSidebarCollapseButton"] button,
+        [data-testid="stSidebarCollapsedControl"] button {
+            background:#FF735C!important;
+            color:#FFFFFF!important;
+            border:1px solid #FF927F!important;
+            border-radius:9px!important;
+            min-width:42px!important;
+            min-height:42px!important;
+            box-shadow:0 2px 8px rgba(0,0,0,.25);
+        }
+        [data-testid="stSidebarCollapseButton"] button svg,
+        [data-testid="stSidebarCollapsedControl"] button svg {
+            color:#FFFFFF!important;
+            stroke:#FFFFFF!important;
         }
         [data-testid="stSidebar"] [data-testid="stForm"]:has(textarea) {
             background:color-mix(in srgb, var(--text-color) 22%, var(--secondary-background-color));
