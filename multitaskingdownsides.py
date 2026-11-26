@@ -193,228 +193,102 @@ CITATIONS = {
 
 SECTIONS = [
     {
-        "id": "myth",
-        "nav_label": "1. The Multitasking Myth",
-        "eyebrow": "START HERE",
-        "title": "Busy isn't the same as effective.",
-        "lead": (
-            "Multitasking can feel fast because several things are moving. But for work "
-            "that needs thought, the brain is usually switching between tasks, not doing "
-            "them at the same time. {cite:1}"
-        ),
+        "id": "myth", "nav_label": "1. the multitasking myth", "eyebrow": "start here",
+        "title": "busy isn't the same as effective.",
+        "lead": "ever get more done before everyone arrives, or after everyone leaves? what changed?",
         "paragraphs": [
-            (
-                "Each switch is small, so its cost is easy to miss. Controlled studies find "
-                "slower responses after task switches and often more errors, too. {cite:1} "
-                "Workplace research also shows how fragmented a day can become...but I think we all know this well from experience~ {cite:2}"
-            ),
-            (
-                "This presentation isn't an argument against collaboration or urgent "
-                "work. It's a practical look at when switching becomes expensive, and "
-                "how to protect the work that deserves full attention."
-            ),
+            "the work didn't get easier. the switching got quieter. fewer incoming demands can protect continuity. {cite:2}",
+            "for work that needs thought, multitasking usually means switching between tasks, not doing them simultaneously. {cite:1}",
         ],
-        "callout_type": "info",
-        "callout": "The goal isn't perfect focus. That's unrealistic - ideal (maybe), but unrealistic. It's fewer avoidable switches&re-starts.",
+        "callout_type": "info", "callout": "the goal isn't silence all day. it's fewer avoidable restarts.",
         "citations": [1, 2],
     },
     {
-        "id": "brain",
-        "nav_label": "2. What Your Brain Actually Does",
-        "eyebrow": "THE MECHANISM",
-        "title": "A switch is a tiny handoff...and momentum eater",
-        "lead": (
-            "When you move from a report to a message and back again, you have to put one "
-            "set of rules down and reload another. Researchers often describe the delay "
-            "and friction in that handoff as a ''switch cost''. {cite:1}"
-        ),
+        "id": "brain", "nav_label": "2. what your brain does", "eyebrow": "the mechanism",
+        "title": "every switch asks you to reload.",
+        "lead": "report. message. report again. each handoff changes the goal and the rules. {cite:1}",
         "paragraphs": [
-            (
-                "A single handoff may barely register. Repeated handoffs are different: "
-                "they interrupt momentum and create more opportunities to lose your place."
-            ),
-            (
-                "This chart is mostly a  visual model, not necessarily a measured claim. Values "
-                "are more so placeholders to give us a good sense of the compounding costs."
-            ),
+            "a single switch may feel small. repeated switches add friction and can increase errors. {cite:1}",
+            "the chart illustrates accumulation; its values are examples, not measured results.",
         ],
-        "callout_type": "warning",
-        "callout": "Illustrative data: the pattern is the point here, not the precise values (we shouldn't be too attached to the exact numbers here. it’s the shape that's interesting: directionally, the effect keeps pointing the same way, supporting something structural vs. just incidental)",
+        "callout_type": "info", "callout": "small handoffs can add up. the exact cost varies by task and person.",
         "citations": [1],
     },
     {
-        "id": "costs",
-        "nav_label": "3. The Hidden Costs",
-        "eyebrow": "WHAT LINGERS",
-        "title": "The interruption ends before its effect does.",
-        "lead": (
-            "Returning to a task doesn't always mean returning at full strength. Part of "
-            "your attention may still be tied to the previous conversation, problem, or "
-            "unfinished thought. {cite:3}"
-        ),
+        "id": "costs", "nav_label": "3. the hidden costs", "eyebrow": "what lingers",
+        "title": "the interruption ends. the effect may not.",
+        "lead": "some attention can stay with the task you just left. {cite:3}",
         "paragraphs": [
-            (
-                "That residue can make the next task feel harder than it should. You may "
-                "reread, reconstruct context, or make a decision with only part of the "
-                "original picture in mind. {cite:4}"
-            ),
-            (
-                "This curve is fairly illustrative, showing the idea of gradual "
-                "recovery; YMMV for personal, minute-by-minute timing~."
-            ),
+            "returning may mean rereading, reconstructing context, or finding your place again.",
+            "a short return note can help you resume after an interruption. {cite:4}",
         ],
-        "callout_type": "info",
-        "callout": "The interruption can be brief. Rebuilding your context takes longer.",
+        "callout_type": "info", "callout": "the recovery curve is conceptual, not a measured timeline.",
         "citations": [3, 4],
     },
     {
-        "id": "building",
-        "nav_label": "4. Building vs. Switching",
-        "eyebrow": "THE CENTERPIECE",
-        "title": "Same wall. Different path.",
-        "lead": (
-            "Focused work places one brick, then the next. Fragmented work can still "
-            "finish the wall, but some steps are spent leaving, returning, and finding "
-            "the right place again."
-        ),
+        "id": "building", "nav_label": "4. building vs. switching", "eyebrow": "the centerpiece",
+        "title": "same wall. different path.",
+        "lead": "both builders finish the same wall. one takes more detours.",
         "paragraphs": [
-            (
-                "Watch both builders. The focused path completes the structure in one "
-                "continuous run. The switching path pauses for detours and re-orientation, "
-                "so elapsed steps keep rising while the wall stands still."
-            ),
-            (
-                "More so a metaphor, not a productivity formula. Its purpose is to make "
-                "invisible coordination costs visible. {cite:2}"
-            ),
+            "watch the focused path build continuously while the switching path pauses to leave and reorient.",
+            "the steps are a metaphor, not a productivity formula or research measurement.",
         ],
-        "callout_type": "warning",
-        "callout": "The animation timing is conceptual. Don't quote it as research data (but i'm fairly certain we could even find research connecting caloric burn differences in this context, if we tried~).",
+        "callout_type": "info", "callout": "same destination. different trip.",
         "citations": [2],
     },
     {
-        "id": "momentum",
-        "nav_label": "5. Momentum & Direction",
-        "eyebrow": "A PHYSICS METAPHOR",
-        "title": "Momentum, direction, and the return.",
-        "lead": "The wall shows the delay. Physics gives us another angle.",
+        "id": "momentum", "nav_label": "5. momentum & direction", "eyebrow": "a process analogy",
+        "title": "every detour makes the route longer.",
+        "lead": "the destination stays the same. the path becomes less direct.",
         "paragraphs": [
-            (
-                "A very simple physics metaphor adds another angle. Picture a loaded cart heading for "
-                "a loading bay: a straight route keeps its momentum pointed toward the goal, "
-                "while each detour means slowing, redirecting, and accelerating again. Work "
-                "isn't a mechanical system, but returning to a task can feel like rebuilding "
-                "that direction and momentum - and potentially, depending on the person, introducing the increased likelihood of more operator errors (what do you think about that?)" 
-                "- also: See page 1 and source [1] for related research on switching and error rates, if interested."
-            ),
+            "lean / six sigma offers a useful analogy: unnecessary transport doesn't add value to the output.",
+            "switching attention is not literal manufacturing transport. the comparison helps make reorientation visible.",
         ],
-        "callout_type": "info",
-        "callout": "How well does this metaphor fit your own experience?",
-        "citations": [1],
+        "callout_type": "info", "callout": "which detours in your day are genuinely necessary?",
+        "citations": [],
     },
     {
-        "id": "different",
-        "nav_label": "6. Doing It Differently",
-        "eyebrow": "A PRACTICAL RESET",
-        "title": "Make focus easier to choose.",
-        "lead": (
-            "Better focus is often a design problem, not a willpower problem. For email "
-            "specifically, one experiment found that checking less often reduced daily "
-            "stress. {cite:5}"
-        ),
+        "id": "different", "nav_label": "6. doing it differently", "eyebrow": "a practical reset",
+        "title": "make focus easier to choose.",
+        "lead": "protect one meaningful block. decide what finished looks like. agree on what's urgent.",
         "paragraphs": [
-            (
-                "Start small: protect one meaningful block, close the inbox, and write "
-                "down the next step before changing tasks. That note makes the eventual "
-                "return less expensive."
-            ),
-            (
-                "A thought: Teams can help by agreeing on what's truly urgent and when quick replies "
-                "are expected. Focus becomes more realistic when the surrounding norms "
-                "support it. What say you?"
-            ),
+            "try outlook calendar's add focus time option, where available. leave a return cue before switching tasks. {cite:4}",
+            "urgency is contextual: the same request can matter differently to different people. use the four quadrants to discuss priorities, not dictate them.",
         ],
-        "callout_type": "info",
-        "callout": "Maybe try 1 protected block this week. Measure what finishes, not how busy it feels (there's probably a systems engineering/saas-ish analog here somewhere too~).",
-        "citations": [5],
+        "callout_type": "info", "callout": "one experiment this week: protect one focus block, then review what finished.",
+        "citations": [4, 5],
     },
     {
-        "id": "focus_dividend",
-        "nav_label": "7. The Focus Dividend",
-        "eyebrow": "A BACK-OF-THE-ENVELOPE MODEL",
-        "title": "What could fewer switches add up to in a week?",
-        "lead": (
-            "Research supports the existence of task-switching costs, but it does not give us "
-            "one universal number of minutes lost per switch. So this is intentionally a simple "
-            "scenario model: change the assumptions and see what the cumulative effect could look like. {cite:1}"
-        ),
+        "id": "focus_dividend", "nav_label": "7. the focus dividend", "eyebrow": "make it personal",
+        "title": "what's your focus dividend?",
+        "lead": "choose your own assumptions and see how small restart costs might add up.",
         "paragraphs": [
-            (
-                "Start conservatively. If you avoid 12 unnecessary switches in a day, and each one "
-                "saves only 45 seconds of stopping, re-orienting, and restarting, that is about "
-                "9 minutes reclaimed in a day - or 45 minutes across a five-day week."
-            ),
-            (
-                "The point isn't that 45 seconds is a measured universal switch cost. It isn't. The "
-                "point is how quickly small restart costs can accumulate. And the time estimate still "
-                "doesn't try to price in attention residue, extra errors, or the stress effects discussed elsewhere. {cite:3} {cite:5}"
-            ),
+            "how many switches could you avoid? what restart cost feels conservative?",
+            "the arithmetic is transparent. the estimate is a scenario, not a productivity promise. {cite:1}",
         ],
-        "callout_type": "info",
-        "callout": "Treat this as a scenario calculator, not a productivity promise. The assumptions are yours; the arithmetic is transparent.",
+        "callout_type": "info", "callout": "what would you do with the time you reclaimed?",
         "citations": [1, 3, 5],
     },
     {
-        "id": "takeaways",
-        "nav_label": "8. Takeaways",
-        "eyebrow": "WHAT TO REMEMBER",
-        "title": "Protect attention where it matters most (guard your precious attention).",
-        "lead": (
-            "Complex work isn't usually happening all at once. Attention is moving "
-            "between tasks, and every avoidable handoff asks the brain to stop, reload, "
-            "and find its place again. {cite:1}"
-        ),
+        "id": "takeaways", "nav_label": "8. takeaways", "eyebrow": "protect your focus",
+        "title": "protect attention where it matters most.",
+        "lead": "reduce avoidable switches. protect one meaningful block. agree on what urgent means.",
         "paragraphs": [
-            (
-                "Some of that attention can remain with the task you just left. The "
-                "result may be slower progress, more reconstruction, and less mental "
-                "room for the work in front of you. {cite:3}"
-            ),
-            (
-                "The practical response isn't perfect concentration. Protect meaningful "
-                "blocks, agree on what's truly urgent, and leave a clear return cue when "
-                "you must switch. {cite:4} For email, planned checking windows may also "
-                "reduce stress. {cite:5}"
-            ),
+            "before this week ends, schedule one focus block. then review what you actually finished.",
+            "consider a 15-minute friday reflection: capture one or two meaningful outcomes for yourself, not for monitoring or tracking work.",
         ],
-        "callout_type": "info",
-        "callout": "Protect the work that needs your full attention. Reduce the switches you can control.",
+        "callout_type": "info", "callout": "the goal isn't perfect focus. it's fewer avoidable restarts.",
         "citations": [1, 3, 4, 5],
     },
     {
-        "id": "sources",
-        "nav_label": "Sources & evidence notes",
-        "eyebrow": "EVIDENCE NOTES",
-        "title": "What the research supports - and what it doesn't.",
-        "lead": (
-            "The studies below are real, published sources that support the presentation's "
-            "main ideas. They don't turn the illustrative charts or animation into measured "
-            "research findings."
-        ),
+        "id": "sources", "nav_label": "sources & evidence notes", "eyebrow": "evidence notes",
+        "title": "what the research supports — and what it doesn't.",
+        "lead": "published research supports switch costs and attention residue. the illustrations are conceptual.",
         "paragraphs": [
-            (
-                "The task-switching chart, refocus curve, wall timing, and schedule timeline "
-                "still use conceptual values. Keep their data-status labels visible unless "
-                "you later replace those values with figures taken directly from a study."
-            ),
-            (
-                "This reference page stays available from the sidebar but is intentionally "
-                "outside the live Next flow. Rehearse the eight presentation slides once on "
-                "the deployed app before a session."
-            ),
+            "the switching chart, refocus curve, wall timing, and schedule use illustrative values, not measured study data.",
+            "this reference page stays outside the eight-section live presentation.",
         ],
-        "callout_type": "warning",
-        "callout": "Don't present illustrative values as measured findings.",
+        "callout_type": "warning", "callout": "don't present illustrative values as measured findings.",
         "citations": [],
     },
 ]
@@ -422,10 +296,9 @@ SECTIONS = [
 LIVE_SECTION_IDS = [section["id"] for section in SECTIONS if section["id"] != "sources"]
 
 SUMMARY_POINTS = [
-    "Complex work is usually switched, not truly multitasked.",
-    "A switch creates a handoff: stop, reload, and find your place.",
-    "Some attention can remain with the task you just left.",
-    "Protect focus with blocks, batches, clear urgency rules, and return notes ('bookmarks').",
+    "reduce avoidable switches.",
+    "protect one meaningful block.",
+    "agree on what urgent means.",
 ]
 
 # All values below are illustrative placeholders.
@@ -529,7 +402,7 @@ PROVIDERS = {
     },
 }
 
-SYSTEM_PROMPT = """You support a workplace presentation called The Cost of Multitasking.
+SYSTEM_PROMPT = """You support a workplace presentation called the cost of multitasking.
 Write for a general workplace audience in clear, concise language. Never invent research,
 citations, statistics, quotations, or URLs. The numbered citations are verified sources,
 but every chart value and animation step is illustrative rather than a measured finding.
@@ -942,7 +815,7 @@ def momentum_paths():
         zorder=5,
     )
     figure.suptitle(
-        "a physics lens: changing direction takes impulse",
+        "a process lens: detours change the route",
         x=0.06,
         ha="left",
         fontsize=18,
@@ -952,7 +825,7 @@ def momentum_paths():
     figure.text(
         0.06,
         0.02,
-        "in physics, impulse changes momentum. here, that is a metaphor for redirecting attention - not a measurement of cognition.",
+        "a route metaphor for attention, not a measured model of cognition.",
         color=PALETTE["muted"],
         fontsize=9,
     )
@@ -1476,7 +1349,7 @@ def render_admin_access() -> None:
 def render_endnotes(citation_ids: list[int]) -> None:
     if not citation_ids:
         return
-    lines = ["<div class='footnotes'><strong>Section sources</strong>"]
+    lines = ["<div class='footnotes'>"]
     for citation_id in citation_ids:
         citation = CITATIONS[citation_id]
         link = (
@@ -1489,7 +1362,8 @@ def render_endnotes(citation_ids: list[int]) -> None:
             f"<span class='source-label'>{escape(citation['label'])}</span><br>"
             f"<span class='citation-text'>{escape(citation['reference'])}</span>{link}</p>"
         )
-    st.markdown("".join(lines) + "</div>", unsafe_allow_html=True)
+    with st.expander("sources & evidence notes", expanded=False):
+        st.markdown("".join(lines) + "</div>", unsafe_allow_html=True)
 
 
 def render_focus_dividend() -> None:
@@ -1548,10 +1422,7 @@ def render_focus_dividend() -> None:
     weekly_metric.metric("reclaimed / week", f"{weekly_minutes:.0f} min")
     yearly_metric.metric("reclaimed / year", f"{yearly_hours:.1f} hr")
 
-    st.info(
-        "with the default assumptions: 12 avoided switches x 45 seconds = 9 minutes/day, "
-        "45 minutes/week, and 36 hours across 48 working weeks."
-    )
+    st.caption("your results update as you adjust the assumptions.")
     st.caption(
         "energy/stress note: this calculator quantifies time only. the presentation discusses "
         "stress and cognitive effort qualitatively because the cited studies do not provide a "
@@ -1625,10 +1496,20 @@ def render_visual(section_id: str) -> None:
             unsafe_allow_html=True,
         )
     elif section_id == "momentum":
+        st.caption("lean / six sigma analogy: a longer route adds movement without changing the output.")
         physics_figure = momentum_paths()
         st.pyplot(physics_figure, use_container_width=True)
         plt.close(physics_figure)
     elif section_id == "different":
+        st.markdown("### a simple prioritization lens")
+        q1, q2 = st.columns(2)
+        with q1:
+            st.markdown("**manage**  \nimportant + urgent")
+            st.markdown("**minimize**  \nnot important + urgent")
+        with q2:
+            st.markdown("**focus**  \nimportant + not urgent")
+            st.markdown("**limit**  \nnot important + not urgent")
+        st.caption("the same request may fall into different quadrants for different people.")
         st.markdown(f"<div class='data-label'>{DATA_STATUS}</div>", unsafe_allow_html=True)
         figure = schedule_timeline()
         st.pyplot(figure, use_container_width=True)
@@ -1636,7 +1517,11 @@ def render_visual(section_id: str) -> None:
     elif section_id == "focus_dividend":
         render_focus_dividend()
     elif section_id == "takeaways":
-        st.markdown("### Some ideas to consider carrying forward...")
+        st.markdown("### one experiment this week")
+        st.markdown("schedule one focus block, then reflect on what finished.")
+        with st.expander("continue learning", expanded=False):
+            st.markdown("[the 7 habits of highly effective people](https://en.wikipedia.org/wiki/The_7_Habits_of_Highly_Effective_People) · [four quadrants overview](https://en.wikipedia.org/wiki/Time_management#The_Eisenhower_Method)")
+        st.markdown("### ideas to carry forward")
         for point in SUMMARY_POINTS:
             st.markdown(f"<div class='summary-line'>{escape(point)}</div>", unsafe_allow_html=True)
 
@@ -1740,9 +1625,14 @@ def render_presentation() -> None:
     st.markdown(f"<div class='lead'>{render_citations(section['lead'])}</div>", unsafe_allow_html=True)
     copy_column, visual_column = st.columns([0.85, 1.35], gap="large")
     with copy_column:
-        paragraphs = "".join(f"<p>{render_citations(text)}</p>" for text in section["paragraphs"])
-        st.markdown(f"<div class='body-copy'>{paragraphs}</div>", unsafe_allow_html=True)
-        (st.warning if section["callout_type"] == "warning" else st.info)(section["callout"])
+        st.markdown(
+            f"<div class='body-copy'><p>{render_citations(section['paragraphs'][0])}</p></div>",
+            unsafe_allow_html=True,
+        )
+        st.info(section["callout"])
+        with st.expander("more context", expanded=False):
+            for paragraph in section["paragraphs"][1:]:
+                st.markdown(render_citations(paragraph), unsafe_allow_html=True)
     with visual_column:
         render_visual(current_id)
     render_endnotes(section["citations"])
@@ -1931,7 +1821,7 @@ def render_ai_studio() -> None:
                                 key="notes_goal", max_chars=1200)
             if st.button("Generate speaker notes", type="primary", key="generate_notes"):
                 prompt = (
-                    "Create presenter notes for the section below. Target 2 to 3 minutes. Include an opening "
+                    "Create presenter notes for the section below. Target about 1 to 2 minutes. Include an opening "
                     "line, a short workplace example, two delivery cues, and a transition. Do not add factual "
                     f"claims beyond the supplied copy. Presenter emphasis: {goal or 'None specified.'}\n\n"
                     f"SECTION COPY:\n{plain_section_text(selected_section)}"
