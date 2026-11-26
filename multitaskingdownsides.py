@@ -217,7 +217,7 @@ SECTIONS = [
     {
         "id": "costs", "nav_label": "3. the hidden costs", "eyebrow": "what lingers",
         "title": "the interruption ends. the effect doesn't.",
-        "lead": "some attention can stay with the task you just left. {cite:3}",
+        "lead": "some attention stays with the task you just left. {cite:3}",
         "paragraphs": [
             "returning means rereading, reconstructing context, and/or finding your place again.",
             "a short return note can help you resume after an interruption. {cite:4}",
