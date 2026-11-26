@@ -1449,7 +1449,7 @@ def render_visual(section_id: str) -> None:
                     <div class="attention-task">
                         <span class="attention-number">01</span>
                         <span class="attention-name">Report</span>
-                        <span class="attention-state">Reload the argument</span>
+                        <span class="attention-state">Reload the argument/remember where you left off</span>
                     </div>
                     <div class="attention-task">
                         <span class="attention-number">02</span>
