@@ -272,7 +272,7 @@ SECTIONS = [
     {
         "id": "takeaways", "nav_label": "8. takeaways", "eyebrow": "protect your focus",
         "title": "protect attention where it matters most.",
-        "lead": "reduce avoidable switches. protect one meaningful block. agree on what urgent means.",
+        "lead": "reduce the avoidable switches. protect one meaningful block. agree on what urgent means.",
         "paragraphs": [
             "before this week ends, schedule one focus block. then review what you actually finished.",
             "consider a 15-minute friday reflection: capture one or two meaningful outcomes for yourself, not for monitoring or tracking work.",
@@ -296,7 +296,7 @@ SECTIONS = [
 LIVE_SECTION_IDS = [section["id"] for section in SECTIONS if section["id"] != "sources"]
 
 SUMMARY_POINTS = [
-    "reduce avoidable switches.",
+    "reduce the avoidable switches.",
     "protect one meaningful block.",
     "agree on what urgent means.",
 ]
